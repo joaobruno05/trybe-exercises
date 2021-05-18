@@ -1,0 +1,203 @@
+* {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  font-size: 1.2em;
+}
+
+/* Cabeçalho */
+
+body {
+  background-color:aliceblue;
+}
+
+.header {
+  width: 100%;
+  text-align: center;
+}
+
+.header h1 {
+  background-color: blue;
+  color: white;
+  padding: 20px;
+}
+
+.nav-links {
+  width: 100%;
+  background-color: gray;
+}
+
+.nav-links ul li {
+  display: inline-block;
+  padding: 20px;
+}
+
+.nav-links ul li a {
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  color: black;
+  padding: 20px;
+  font-weight: bold;
+}
+
+.nav-links ul li a:hover {
+  background-color: green;
+  color: white;
+}
+
+.nav-index {
+  margin-top: 20px;
+}
+
+.nav-index ul li {
+  margin-bottom: 20px;
+  padding: 5px;
+}
+
+.nav-index ul li a {
+  background-color: red;
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.nav-index ul li a:hover {
+  background-color: white;
+  color: black;
+  border: 1px solid red;
+}
+
+/* Primeira seção */
+
+.articles {
+  width: 60%;
+  margin: 50px auto;
+  text-align: justify;
+}
+
+.articles h2 {
+  margin-bottom: 20px;
+}
+
+.articles img {
+  width: 90%;
+}
+
+.articles .section img {
+  float: left;
+  width: 60%;
+  margin-right: 20px;
+  margin-top: 15px;
+}
+
+.articles .section-one .first-paragraph {
+  margin-top: 25px;
+}
+
+.articles .section h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid gray;
+}
+
+.articles p {
+  margin-bottom: 10px;
+}
+
+.articles p span.italico {
+  font-style: italic;
+}
+
+.articles p span.negrito {
+  font-weight: bold;
+}
+
+.articles .section h2 {
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+/* Segunda seção */
+
+.articles .section-two h3 {
+  margin-top: 50px;
+}
+
+.articles .section-two img {
+  float: left;
+  width: 60%;
+  margin-right: 20px;
+}
+
+.articles .section-two .first-paragraph {
+  margin-top: 25px;
+}
+
+/* Referências bibliográficas */
+
+.bibliographic-references ol {
+ margin-left: 15px;
+}
+
+.bibliographic-references ol li {
+  margin-bottom: 5px;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 1.1em;
+}
+
+/* Conteúdo lateral */
+
+.side-bar {
+  background-color:lightseagreen;
+  height: 100px;
+  width: 200px;
+  display: inline-block;
+  float: right;
+  padding: 20px;
+  margin-right: 60px;
+  margin-top: -1967px;
+}
+
+.side-bar p {;
+  margin-top: 10px;
+  font-size: 0.8em;
+}
+
+.side-bar p a {
+  font-weight: bold;
+}
+
+.side-bar p a:hover {
+  color: white;
+}
+
+.side-bar-div {
+  margin-top: 10px;
+}
+
+/* Rodapé */
+
+.footer {
+  background-color: gray;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.footer p {
+  width: 60%;
+  margin: 0 auto;
+  font-size: 0.8em;
+}
