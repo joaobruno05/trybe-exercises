@@ -187,3 +187,17 @@ table, th, td {
 .side-bar-div {
   margin-top: 10px;
 }
+
+/* Rodapé */
+
+.footer {
+  background-color: gray;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.footer p {
+  width: 60%;
+  margin: 0 auto;
+  font-size: 0.8em;
+}
