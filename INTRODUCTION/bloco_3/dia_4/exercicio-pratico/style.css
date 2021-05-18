@@ -48,6 +48,29 @@ body {
   color: white;
 }
 
+.nav-index {
+  margin-top: 20px;
+}
+
+.nav-index ul li {
+  margin-bottom: 20px;
+  padding: 5px;
+}
+
+.nav-index ul li a {
+  background-color: red;
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.nav-index ul li a:hover {
+  background-color: white;
+  color: black;
+  border: 1px solid red;
+}
+
 /* Primeira seção */
 
 .articles {
