@@ -1,0 +1,37 @@
+* {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  text-align: center;
+}
+
+.header h1 {
+  background-color: blue;
+  color: white;
+  padding: 20px;
+}
+
+.nav-links {
+  background-color: gray;
+}
+
+.nav-links ul li {
+  display: inline-block;
+  padding: 20px;
+}
+
+.nav-links ul li a {
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  color: black;
+  padding: 20px;
+  font-weight: bold;
+}
+
+.nav-links ul li a:hover {
+  background-color: red;
+  color: white;
+}
