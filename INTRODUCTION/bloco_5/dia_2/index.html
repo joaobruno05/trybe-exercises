@@ -62,6 +62,7 @@
       // 1. Adicione a tag h1 com o texto Exercício 5.2 - JavaScript DOM como filho da tag body
       let tagBody = document.body;
       let title = document.createElement('h1');
+      title.innerText = 'Exercício 5.2 - Javascript DOM'
 
       tagBody.appendChild(title);
 
@@ -101,6 +102,28 @@
       img.src = 'https://picsum.photos/200';
 
       divSonDiv2.appendChild(img);
+
+      // 8. Adicione uma lista não ordenada com os valores de 1 a 10 por extenso como valores da lista. Essa lista deve ser filha do div criado no passo 6
+      let unorderedList = document.createElement('ul');
+      unorderedList.className = 'unorderedList';
+
+      let list = document.querySelector('.unorderedList');
+      divSonDiv3.appendChild(unorderedList);
+
+      let listItems = ['Um', 'Dois', 'Três', 'Quatro', 'Cinco', 'Seis', 'Sete', 'Oito', 'Nove', 'Dez'];
+      for (index = 0; index < listItems.length; index += 1) {
+        let liList = document.createElement('li');
+        liList.innerText = listItems[index];
+        unorderedList.appendChild(liList);
+      }
+
+
+      
+    
+
+      
+
+      
 
     </script>
 
