@@ -74,9 +74,16 @@
       let divStep2 = document.querySelector('.main-content');
       let divSonDiv = document.createElement('div');
       divSonDiv.className = 'center-content';
-      
+
       divStep2.appendChild(divSonDiv);
 
+      // 4. Adicione a tag p como filho do div criado no passo 3 e coloque algum texto
+      let divStep3 = document.querySelector('.center-content');
+      let paragraph = document.createElement('p');
+
+      divStep3.appendChild(paragraph);
+
+      paragraph.innerText = 'Hello World!!! How are you?'
 
     </script>
   </body>
