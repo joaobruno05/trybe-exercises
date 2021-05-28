@@ -61,12 +61,22 @@
       // 1. Adicione a tag h1 com o texto Exercício 5.2 - JavaScript DOM como filho da tag body
       let tagBody = document.body;
       let title = document.createElement('h1');
+
       tagBody.appendChild(title);
 
       // 2. Adicione a tag div com a classe main-content como filho da tag body
       let divBody = document.createElement('div');
       divBody.className = 'main-content';
+
       tagBody.appendChild(divBody);
+
+      // 3. Adicione a tag div com a classe center-content como filho da tag div criada no passo 2
+      let divStep2 = document.querySelector('.main-content');
+      let divSonDiv = document.createElement('div');
+      divSonDiv.className = 'center-content';
+      
+      divStep2.appendChild(divSonDiv);
+
 
     </script>
   </body>
