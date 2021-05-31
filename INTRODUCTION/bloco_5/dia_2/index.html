@@ -132,6 +132,10 @@
       for (let index = 0; index < h3Description.length; index += 1) {
         h3Description[index].className = 'description';
       }
+
+      // 12. Remova o div criado no passo 5 (aquele que possui a classe left-content ). Utilize a função .removeChild()
+      let leftContent = document.querySelector('.left-content');
+      divStep2.removeChild(leftContent);
       
 
     </script>
