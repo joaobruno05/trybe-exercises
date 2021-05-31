@@ -19,7 +19,7 @@
       }
 
       .main-content .center-content {
-        background-color: green;
+        background-color: red;
         width: 50%;
         margin-left: auto;
         margin-right: auto;
@@ -46,7 +46,8 @@
       .main-content .right-content {
         background-color: blue;
         width: 60%;
-        margin: 0 auto;
+        margin-left: auto;
+        margin-right: 0;
       }
 
       .main-content .description {
@@ -136,10 +137,17 @@
       let leftContent = document.querySelector('.left-content');
       divStep2.removeChild(leftContent);
 
-      //13. Centralize o div criado no passo 6 (aquele que possui a classe right-content ). Dica: para centralizar, basta configurar o margin-right: auto do div; OK
-      // Foi modificado no CSS fazendo -> margin: o auto;
+      //13. Centralize o div criado no passo 6 (aquele que possui a classe right-content ). Dica: para centralizar, basta configurar o margin-right: auto do div
+      let rightContent = document.querySelector('.right-content');
+      rightContent.style.marginRight = 'auto';
 
-      //14. Troque a cor de fundo do elemento pai da div criada no passo 3 (aquela que possui a classe center-content ) para a cor verde; OK
+      //14. Troque a cor de fundo do elemento pai da div criada no passo 3 (aquela que possui a classe center-content ) para a cor verde;
+      let centerContent = document.querySelector('.center-content');
+      centerContent.style.backgroundColor = 'green';
+
+      //15. Remova os dois últimos elementos ( nove e dez ) da lista criada no passo 8
+      unorderedList.lastChild.remove();
+      unorderedList.lastChild.remove();
 
     </script>
 
