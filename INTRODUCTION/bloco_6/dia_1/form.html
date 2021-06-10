@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Formulários</title>
+</head>
+<body>
+  
+  <header>
+    <h1 class="title">Cadastramento de Currículo</h1>
+  </header>
+
+  <section>
+    <div class="container">
+      <form class="form" action="" method="get">
+        <fieldset>
+          
+          <legend>Dados Pessoais</legend>
+
+          <label for="full-name">Nome completo
+            <input type="text" name="name" id="full-name" required maxlength="40">
+          </label>
+
+          <label for="user-email">E-mail
+            <input type="email" name="email" id="user-email" required maxlength="50">
+          </label>
+
+          <label for="user-cpf">CPF
+            <input type="text" name="cpf" id="user-cpf" required maxlength="28">
+          </label>
+
+          <label for="user-adress">Endereço
+            <input type="text" name="endereço" id="user-adress" required maxlength="200">
+          </label>
+
+          <label for="user-city">Cidade
+            <input type="text" name="cidade" id="user-city" required maxlength="28">
+          </label>
+
+          <label for="brazil-states">Estado
+            <select name="estados" id="brazil-states" required>
+            </select>
+          </label>
+
+          <div class="house">
+            <label for="house">
+              <input type="radio" name="tipo-residencia" id="house" required> Casa
+            </label>
+          </div>
+          <div class="apartament">    
+            <label for="apartament">
+              <input type="radio" name="tipo-residencia" id="apartament" required> Apartamento
+            </label>
+          </div>
+      
+        </fieldset>
+
+        <fieldset>
+
+          <legend>último emprego</legend>
+
+
+
+        </fieldset>
+      </form>
+    </div>
+  </section>
+  
+
+  <script src="script.js"></script>
+</body>
+</html>

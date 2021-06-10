@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: ghostwhite;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.title {
+  background-color: gray;
+  border: 1px solid white;
+  border-radius: 3px;
+  color: black;
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 20px;
+}
+
+.form {
+
+}
+
+.form fieldset {
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.form legend {
+  text-transform: uppercase;
+}
+
+.form label {
+  display: block;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.house {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.apartament {
+  display: inline-block;
+}
