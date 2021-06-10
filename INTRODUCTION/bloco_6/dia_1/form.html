@@ -14,18 +14,19 @@
   </header>
 
   <section>
-    <div class="container">
+    <div class="container" id="container">
       <form class="form" action="" method="get">
-        <fieldset>
+
+        <fieldset id="form-part-one">
           
           <legend>Dados Pessoais</legend>
 
-          <label for="full-name">Nome completo
-            <input type="text" name="name" id="full-name" required maxlength="40" autofocus>
+          <label for="full-name" id="label-fullname">Nome completo
+            <input type="text" name="name" id="full-name" required autofocus>
           </label>
 
           <label for="user-email">E-mail
-            <input type="email" name="email" id="user-email" required maxlength="50">
+            <input type="email" name="email" id="user-email" required>
           </label>
 
           <label for="user-cpf">CPF
@@ -47,12 +48,12 @@
 
           <div class="house">
             <label for="house">
-              <input type="radio" name="tipo-residencia" id="house" required> Casa
+              <input type="radio" name="tipo-residencia" id="house" value="casa" required> Casa
             </label>
           </div>
           <div class="apartament">    
             <label for="apartament">
-              <input type="radio" name="tipo-residencia" id="apartament" required> Apartamento
+              <input type="radio" name="tipo-residencia" id="apartament" value="apartamento" required> Apartamento
             </label>
           </div>
       
@@ -81,6 +82,11 @@
           </label>
 
         </fieldset>
+
+        <div class="div-btn">
+          <button id="btn-submit" class="btn" type="submit">Enviar</button>
+        </div>
+
       </form>
     </div>
   </section>

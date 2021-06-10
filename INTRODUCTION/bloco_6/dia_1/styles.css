@@ -56,3 +56,34 @@ body {
   padding: 3px;
   width: 100%;
 }
+
+.div-btn {
+  text-align: center;
+}
+
+.btn {
+  background-color: green;
+  border: 1px solid white;
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 12px;
+  margin-bottom: 40px;
+  width: 100px;
+  padding: 3px;
+}
+
+.btn:hover {
+  background-color: white;
+  border: 1px solid green;
+  color: black;
+  transition-duration: 0.2s;
+}
+
+.error-fullname {
+  color: red;
+  font-size: 11px;
+  margin-left: 93px;
+  padding: 3px;
+  width: 30%;
+}
