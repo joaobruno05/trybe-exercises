@@ -9,3 +9,29 @@ function chooseBrazilState() {
   }
 }
 chooseBrazilState();
+
+let date = document.getElementById('date');
+
+function validateStartDate() {
+  let validFormat = /^\d{2}[/]\d{2}[/]\d{4}$/;
+  
+  let day = parseInt(date.value.substring(0,2));
+  let month = parseInt(date.value.substring(3,5));
+  let year = parseInt(date.value.substring(6,10));
+
+  if (date.value) {
+    if (!validFormat.test(date.value)) {
+      alert('A data está no formato errado. Digite uma data válida!!!');
+    }
+    if (day <= 0 || day > 31) {
+      alert('Você digitou um dia inválido. Escolha outro!!!')
+    }
+    if (month <= 0 || month > 12) {
+      alert('Você digitou um mês inválido. Escolha outro!!!')
+    }
+    if (year < 0) {
+      alert('Você digitou um ano inválido. Escolha outro!!!')
+    }
+  }
+}
+validateStartDate();

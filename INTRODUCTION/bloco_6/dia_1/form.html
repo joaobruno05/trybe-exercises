@@ -21,7 +21,7 @@
           <legend>Dados Pessoais</legend>
 
           <label for="full-name">Nome completo
-            <input type="text" name="name" id="full-name" required maxlength="40">
+            <input type="text" name="name" id="full-name" required maxlength="40" autofocus>
           </label>
 
           <label for="user-email">E-mail
@@ -62,7 +62,23 @@
 
           <legend>último emprego</legend>
 
+          <label for="resume-summary">Resumo do currículo
+            <div>
+              <textarea class="textarea" name="textarea" id="resume-summary" required maxlength="1000" rows="8"></textarea>
+            </div>
+          </label>
 
+          <label for="office">Cargo
+            <input type="text" name="cargo" id="office" required max="40">
+          </label>
+
+          <label for="job-description">Descrição do cargo
+            <input type="text" name="descricao-do-cargo" id="job-description" required maxlength="500">
+          </label>
+
+          <label for="date">Data de início
+            <input type="text" name="data" id="date" placeholder="dd/mm/aaaa" required>
+          </label>
 
         </fieldset>
       </form>
