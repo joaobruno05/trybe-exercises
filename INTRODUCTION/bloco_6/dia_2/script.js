@@ -1,3 +1,4 @@
+// Colocando todos os estados brasileiros no select
 let selectState = document.getElementById('brazil-states');
 
 function chooseBrazilState() {
@@ -9,10 +10,18 @@ function chooseBrazilState() {
     option.innerText = states[index];
     option.value = states[index];
 
-  }
+  };
 }
 chooseBrazilState();
 
+let btnSubmit = document.getElementById('btn-submit');
+
+btnSubmit.addEventListener('click', (event) => {
+  if ()
+  event.preventDefault();
+});
+
+// Validando a data de início com a biblioteca pikaday
 let picker = new Pikaday({
   field: document.getElementById('datepicker'),
   format: 'D/M/YYYY',
@@ -32,4 +41,56 @@ let picker = new Pikaday({
       const year = parseInt(parts[2], 10);
       return new Date(year, month, day);
   }
+});
+
+
+new window.JustValidate('.js-form', {
+  // options here
+});
+
+new window.JustValidate('.js-form', {
+  Rules: {
+    email: {
+        required: true,
+        email: true,
+        maxLength: 50
+    },
+    name: {
+        required: true,
+        maxLength: 40
+    },
+    cpf: {
+      required: true,
+      maxLength: 11
+    },
+    adress: {
+      required: true,
+      maxLength: 200
+    },
+    city: {
+      required: true,
+      maxLength: 28
+    },
+    state: {
+      required: true
+    },
+    residence: {
+      required: true
+    },
+    textarea: {
+      required: true,
+      maxLength: 1000
+    },
+    office: {
+      required: true,
+      maxLength: 40
+    },
+    description: {
+      required: true,
+      maxLength: 500
+    },
+    date: {
+      required
+    }
+}
 });

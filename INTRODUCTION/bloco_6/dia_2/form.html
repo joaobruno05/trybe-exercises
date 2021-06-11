@@ -16,54 +16,54 @@
   </header>
 
   <section>
-    <form action="" method="GET">
+    <form class="js-form" action="" method="GET">
       <!-- Nome completo -->
       <div class="container">
         <div class="form-group">
             <h3 class="mt-4">Dados Pessoais</h3>
   
             <label class="form-label" for="full-name" id="label-fullname">Nome completo</label>
-            <input class="form-control" type="text" name="name" id="full-name" required autofocus>
+            <input class="form-control" type="text" data-validate-field="name" name="name" id="full-name" autofocus>
         </div>
         
         <!-- E-mail -->
         <div class="form-group">
           <label class="form-label" for="user-email">E-mail</label>
-          <input class="form-control" type="email" name="email" id="user-email" required>
+          <input class="form-control" type="email" data-validate-field="email" name="email" id="user-email">
         </div>
         
         <!-- CPF -->
         <div class="form-group">
           <label class="form-label" for="user-cpf">CPF</label>
-          <input class="form-control" type="text" name="cpf" id="user-cpf" required maxlength="28">
+          <input class="form-control" type="text" data-validate-field="cpf" name="cpf" id="user-cpf">
         </div>
         
         <!-- Endereço -->
         <div class="form-group">
           <label class="form-label" for="user-adress">Endereço</label>
-          <input class="form-control" type="text" name="endereço" id="user-adress" required maxlength="200">
+          <input class="form-control" type="text" data-validate-field="adress" name="adress" id="user-adress">
         </div>
         
         <!-- Cidade -->
         <div class="form-group">
           <label class="form-label" for="user-city">Cidade</label>
-          <input class="form-control" type="text" name="cidade" id="user-city" required maxlength="28">
+          <input class="form-control" type="text" data-validate-field="city" name="city" id="user-city">
         </div>
         
         <!-- Estado -->
         <div class="form-group">
           <label class="form-label" for="brazil-states">Estado</label>
-          <select class="form-select" name="estados" id="brazil-states" required></select>
+          <select class="form-select" name="state" id="brazil-states"></select>
         </div>
 
         <!-- Tipo de residência -->
           <div class="form-check mt-3">
             <label class="form-check-label" for="house">Casa</label>
-            <input class="form-check-input" type="radio" name="tipo-residencia" id="house" value="casa" required>
+            <input class="form-check-input" type="radio" data-validate-field="residence" name="residence" id="house" value="casa">
           </div>
           <div class="form-check">    
             <label class="form-check-label" for="apartament">Apartamento</label>
-            <input class="form-check-input"  type="radio" name="tipo-residencia" id="apartament" value="apartamento" required>
+            <input class="form-check-input"  type="radio" data-validate-field="residence" name="residence" id="apartament" value="apartamento">
           </div>
 
           <h3 class="mt-4">Último emprego</h3>
@@ -71,27 +71,31 @@
           <!-- Resumo currículo -->
           <div class="form-group">
             <label class="form-label" for="resume-summary">Resumo do currículo</label>
-            <textarea class="form-control" name="textarea" rows="6" id="resume-summary" required maxlength="1000"></textarea>
+            <textarea class="form-control" name="textarea" rows="6" id="resume-summary"></textarea>
           </div>
 
           <!-- Cargo -->
           <div class="form-group">
             <label class="form-label" for="office">Cargo</label>
-            <input class="form-control" type="text" name="cargo" id="office" required max="40">
+            <input class="form-control" type="text" data-validate-field="office" name="office" id="office">
           </div>
 
           <!-- Descrição do cargo -->
           <div class="form-group">
             <label class="form-label" for="job-description">Descrição do cargo</label>
-            <input class="form-control" type="text" name="descricao-do-cargo" id="job-description" required maxlength="500">
+            <input class="form-control" type="text" data-validate-field="description" name="description" id="job-description">
           </div>
 
           <!-- Data de início -->
           <div class="form-group">
             <label class="form-label" for="date">Data de início</label>
+<<<<<<< HEAD
+            <input class="form-control" type="text" data-validate-field="date" name="date" id="datepicker" placeholder="dd/mm/aaaa" autocomplete="off">
+=======
 
             <input class="form-control" type="text" name="data" id = "datepicker" placeholder="dd/mm/aaaa" autocomplete="off" required>
 
+>>>>>>> 20f51d19761e50b1abdb2d1f8d1fe0ee076d807b
           </div>
 
           <!-- Botão submit -->
@@ -105,6 +109,9 @@
 
 
   
+  
+  <script src="./path/to/just-validate.min.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
