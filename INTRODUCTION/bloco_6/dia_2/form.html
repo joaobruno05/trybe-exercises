@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <title>Formulários</title>
+</head>
+<body>
+  
+  <header class="container text-center">
+    <h1>Cadastramento de Currículo</h1>
+  </header>
+
+  <section>
+    <form action="" method="GET">
+      <!-- Nome completo -->
+      <div class="container">
+        <div class="form-group">
+            <h3 class="mt-4">Dados Pessoais</h3>
+  
+            <label class="form-label" for="full-name" id="label-fullname">Nome completo</label>
+            <input class="form-control" type="text" name="name" id="full-name" required autofocus>
+        </div>
+        
+        <!-- E-mail -->
+        <div class="form-group">
+          <label class="form-label" for="user-email">E-mail</label>
+          <input class="form-control" type="email" name="email" id="user-email" required>
+        </div>
+        
+        <!-- CPF -->
+        <div class="form-group">
+          <label class="form-label" for="user-cpf">CPF</label>
+          <input class="form-control" type="text" name="cpf" id="user-cpf" required maxlength="28">
+        </div>
+        
+        <!-- Endereço -->
+        <div class="form-group">
+          <label class="form-label" for="user-adress">Endereço</label>
+          <input class="form-control" type="text" name="endereço" id="user-adress" required maxlength="200">
+        </div>
+        
+        <!-- Cidade -->
+        <div class="form-group">
+          <label class="form-label" for="user-city">Cidade</label>
+          <input class="form-control" type="text" name="cidade" id="user-city" required maxlength="28">
+        </div>
+        
+        <!-- Estado -->
+        <div class="form-group">
+          <label class="form-label" for="brazil-states">Estado</label>
+          <select class="form-select" name="estados" id="brazil-states" required></select>
+        </div>
+
+        <!-- Tipo de residência -->
+          <div class="form-check mt-3">
+            <label class="form-check-label" for="house">Casa</label>
+            <input class="form-check-input" type="radio" name="tipo-residencia" id="house" value="casa" required>
+          </div>
+          <div class="form-check">    
+            <label class="form-check-label" for="apartament">Apartamento</label>
+            <input class="form-check-input"  type="radio" name="tipo-residencia" id="apartament" value="apartamento" required>
+          </div>
+
+          <h3 class="mt-4">Último emprego</h3>
+
+          <!-- Resumo currículo -->
+          <div class="form-group">
+            <label class="form-label" for="resume-summary">Resumo do currículo</label>
+            <textarea class="form-control" name="textarea" rows="6" id="resume-summary" required maxlength="1000"></textarea>
+          </div>
+
+          <!-- Cargo -->
+          <div class="form-group">
+            <label class="form-label" for="office">Cargo</label>
+            <input class="form-control" type="text" name="cargo" id="office" required max="40">
+          </div>
+
+          <!-- Descrição do cargo -->
+          <div class="form-group">
+            <label class="form-label" for="job-description">Descrição do cargo</label>
+            <input class="form-control" type="text" name="descricao-do-cargo" id="job-description" required maxlength="500">
+          </div>
+
+          <!-- Data de início -->
+          <div class="form-group">
+            <label class="form-label" for="date">Data de início</label>
+            <input class="form-control" type="text" name="data" id="date" placeholder="dd/mm/aaaa" required>
+          </div>
+
+          <!-- Botão submit -->
+          <div class="mt-4 mb-4">
+            <button id="btn-submit" class="btn btn-outline-success w-100" type="submit">Enviar</button>
+          </div>
+
+      </div>
+    </form>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
+</body>
+</html>
