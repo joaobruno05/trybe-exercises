@@ -7,7 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
-
   <title>Formulários</title>
 </head>
 <body>
@@ -66,7 +65,7 @@
             <label class="form-check-label" for="apartament">Apartamento</label>
             <input class="form-check-input"  type="radio" data-validate-field="residence" name="residence" id="apartament" value="apartamento">
           </div>
-          
+
           <h3 class="mt-4">Último emprego</h3>
 
           <!-- Resumo currículo -->
@@ -90,7 +89,13 @@
           <!-- Data de início -->
           <div class="form-group">
             <label class="form-label" for="date">Data de início</label>
+<<<<<<< HEAD
             <input class="form-control" type="text" data-validate-field="date" name="date" id="datepicker" placeholder="dd/mm/aaaa" autocomplete="off">
+=======
+
+            <input class="form-control" type="text" name="data" id = "datepicker" placeholder="dd/mm/aaaa" autocomplete="off" required>
+
+>>>>>>> 20f51d19761e50b1abdb2d1f8d1fe0ee076d807b
           </div>
 
           <!-- Botão submit -->
@@ -102,11 +107,13 @@
     </form>
   </section>
 
+
   
   
   <script src="./path/to/just-validate.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
