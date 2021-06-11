@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
   <title>Formulários</title>
 </head>
 <body>
@@ -88,7 +89,9 @@
           <!-- Data de início -->
           <div class="form-group">
             <label class="form-label" for="date">Data de início</label>
-            <input class="form-control" type="text" name="data" id="date" placeholder="dd/mm/aaaa" required>
+
+            <input class="form-control" type="text" name="data" id = "datepicker" placeholder="dd/mm/aaaa" autocomplete="off" required>
+
           </div>
 
           <!-- Botão submit -->
@@ -99,6 +102,10 @@
       </div>
     </form>
   </section>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   <script src="script.js"></script>

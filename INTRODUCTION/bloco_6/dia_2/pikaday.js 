@@ -1,0 +1,1306 @@
+/ *!
+ * Pikaday
+ *
+* Copyright © 2014 David Bushell | Licença BSD e MIT | https://github.com/Pikaday/Pikaday
+ * /
+
+( função  ( raiz ,  fábrica )
+{
+    'use estrito' ;
+
+     momento var ;
+    if  ( tipo de  exportações  ===  'objeto' )  {
+        // Módulo CommonJS
+        // Carregar moment.js como uma dependência opcional
+        tente  {  momento  =  requer ( 'momento' ) ;  }  catch  ( e )  { }
+        módulo . exportações  =  fábrica ( momento ) ;
+    }  else  if  ( typeof  define  ===  'function'  &&  define . amd )  {
+        // AMD. Registre-se como um módulo anônimo.
+        definir ( função  ( req )
+        {
+            // Carregar moment.js como uma dependência opcional
+            var  id  =  'momento' ;
+            tente  {  momento  =  req ( id ) ;  }  catch  ( e )  { }
+            retorno de  fábrica ( momento ) ;
+        } ) ;
+    }  else  {
+        root . Pikaday  =  fábrica ( raiz . Momento ) ;
+    }
+} ( isto ,  função  ( momento )
+{
+    'use estrito' ;
+
+    / **
+     * detecção de recursos e funções auxiliares
+     * /
+    var  hasMoment  =  typeof  moment  ===  'função' ,
+
+    hasEventListeners  =  ! ! janela . addEventListener ,
+
+    documento  =  janela . documento ,
+
+    sto  =  janela . setTimeout ,
+
+    addEvent  =  function ( el ,  e ,  callback ,  capture )
+    {
+        if  ( hasEventListeners )  {
+            el . addEventListener ( e ,  callback ,  ! ! captura ) ;
+        }  else  {
+            el . attachEvent ( 'on'  +  e ,  callback ) ;
+        }
+    } ,
+
+    removeEvent  =  function ( el ,  e ,  callback ,  capture )
+    {
+        if  ( hasEventListeners )  {
+            el . removeEventListener ( e ,  callback ,  ! ! captura ) ;
+        }  else  {
+            el . detachEvent ( 'on'  +  e ,  callback ) ;
+        }
+    } ,
+
+    trim  =  função ( str )
+    {
+        return  str . aparar ? str . trim ( ) : str . substituir ( / ^ \ s + | \ s + $ / g , '' ) ;
+    } ,
+
+    hasClass  =  function ( el ,  cn )
+    {
+        return  ( ''  +  el . className  +  '' ) . indexOf ( ''  +  cn  +  '' )  ! ==  - 1 ;
+    } ,
+
+    addClass  =  function ( el ,  cn )
+    {
+        if  ( ! hasClass ( el ,  cn ) )  {
+            el . className  =  ( el . className  ===  '' ) ? cn : el . className  +  ''  +  cn ;
+        }
+    } ,
+
+    removeClass  =  function ( el ,  cn )
+    {
+        el . className  =  trim ( ( ''  +  el . className  +  '' ) . replace ( ''  +  cn  +  '' ,  '' ) ) ;
+    } ,
+
+    isArray  =  function ( obj )
+    {
+        return  ( / Array / ) . test ( Object . prototype . toString . call ( obj ) ) ;
+    } ,
+
+    isDate  =  função ( obj )
+    {
+        retorno  ( / Data / ) . test ( Object . prototype . toString . call ( obj ) )  &&  ! isNaN ( obj . getTime ( ) ) ;
+    } ,
+
+    isWeekend  =  função ( data )
+    {
+        var  dia  =  data . getDay ( ) ;
+         dia de  retorno ===  0  ||  dia  ===  6 ;
+    } ,
+
+    isLeapYear  =  function ( ano )
+    {
+        // solução retirada de date.js (licença MIT): https://github.com/datejs/Datejs
+        retorno  ( ( ano  %  4  ===  0  &&  ano  %  100  ! ==  0 )  ||  ano  %  400  ===  0 ) ;
+    } ,
+
+    getDaysInMonth  =  function ( ano ,  mês )
+    {
+        return  [ 31 ,  isLeapYear ( year ) ? 29 : 28 ,  31 ,  30 ,  31 ,  30 ,  31 ,  31 ,  30 ,  31 ,  30 ,  31 ] [ mês ] ;
+    } ,
+
+    setToStartOfDay  =  função ( data )
+    {
+        if  ( isDate ( date ) )  date . setHours ( 0 , 0 , 0 , 0 ) ;
+    } ,
+
+    compareDates  =  função ( a , b )
+    {
+        // comparação de data fraca (use setToStartOfDay (data) para garantir o resultado correto)
+        retornar  a . getTime ( )  ===  b . getTime ( ) ;
+    } ,
+
+    extender  =  função ( para ,  de ,  sobrescrever )
+    {
+        var  prop ,  hasProp ;
+        para  ( prop  em  de )  {
+            hasProp  =  to [ prop ]  ! ==  undefined ;
+            if  ( hasProp  &&  typeof  from [ prop ]  ===  'object'  &&  from [ prop ]  ! ==  null  &&  from [ prop ] . nodeName  ===  undefined )  {
+                if  ( isDate ( from [ prop ] ) )  {
+                    if  ( substituir )  {
+                        para [ prop ]  =  nova  data ( de [ prop ] . getTime ( ) ) ;
+                    }
+                }
+                else  if  ( isArray ( from [ prop ] ) )  {
+                    if  ( substituir )  {
+                        para [ prop ]  =  de [ prop ] . fatia ( 0 ) ;
+                    }
+                }  else  {
+                    para [ prop ]  =  estender ( { } ,  de [ prop ] ,  substituir ) ;
+                }
+            }  else  if  ( overwrite  ||  ! hasProp )  {
+                para [ prop ]  =  de [ prop ] ;
+            }
+        }
+        voltar  para ;
+    } ,
+
+    fireEvent  =  function ( el ,  eventName ,  data )
+    {
+        var  ev ;
+
+        if  ( document . createEvent )  {
+            ev  =  document . createEvent ( 'HTMLEvents' ) ;
+            ev . initEvent ( eventName ,  true ,  false ) ;
+            ev  =  extend ( ev ,  data ) ;
+            el . dispatchEvent ( ev ) ;
+        }  else  if  ( document . createEventObject )  {
+            ev  =  document . createEventObject ( ) ;
+            ev  =  extend ( ev ,  data ) ;
+            el . fireEvent ( 'on'  +  eventName ,  ev ) ;
+        }
+    } ,
+
+    ajustarCalendar  =  função ( calendário )  {
+        if  ( calendário . mês  <  0 )  {
+            calendário . ano  - =  matemática . ceil ( Mat . abs ( mês . calendário ) / 12 ) ;
+            calendário . mês  + =  12 ;
+        }
+        if  ( calendário . mês  >  11 )  {
+            calendário . ano  + =  matemática . chão ( Mat . abs ( calendário . mês ) / 12 ) ;
+            calendário . mês  - =  12 ;
+        }
+         calendário de retorno ;
+    } ,
+
+    / **
+     * padrões e localização
+     * /
+    defaults  =  {
+
+        // vincula o selecionador a um campo de formulário
+        campo : nulo ,
+
+        // mostrar / ocultar automaticamente o seletor no foco `field` (padrão` true` se `field` estiver definido)
+        vinculado : indefinido ,
+
+        // atributo de dados no campo de entrada com um texto de assistência ária (aplicado apenas quando `bound` é definido)
+        ariaLabel : 'Use as setas do teclado para escolher uma data' ,
+
+        // posição do selecionador de data, em relação ao campo (padrão para inferior e esquerda)
+        // (palavras-chave 'inferior' e 'esquerda' não são usadas, 'superior' e 'direita' são modificadores na posição inferior / esquerda)
+        posição : 'inferior esquerdo' ,
+
+        // caber automaticamente na janela de visualização, mesmo que isso signifique reposicionar a partir da opção de posição
+        reposicionar : verdadeiro ,
+
+        // o formato de saída padrão para os valores `.toString ()` e `field`
+        formato : 'AAAA-MM-DD' ,
+
+        // a função toString que passa um objeto de data atual e formato
+        // e retorna uma string
+        toString : null ,
+
+        // usado para criar objeto de data a partir da string de entrada atual
+        parse : null ,
+
+        // a data inicial para ver quando aberto pela primeira vez
+        defaultDate : null ,
+
+        // tornar `defaultDate` o valor inicial selecionado
+        setDefaultDate : false ,
+
+        // primeiro dia da semana (0: domingo, 1: segunda-feira etc)
+        primeiro dia : 0 ,
+
+        // número mínimo de dias na semana que obtém a semana número um
+        // padrão ISO 8601, semana 01 é a semana com a primeira quinta-feira (4)
+        firstWeekOfYearMinDays : 4 ,
+
+        // o sinalizador padrão para análise estrita de data do momento
+        formatStrict : false ,
+
+        // a data mínima / mais antiga que pode ser selecionada
+        minDate : null ,
+        // a data máxima / mais recente que pode ser selecionada
+        maxDate : null ,
+
+        // número de anos de cada lado, ou matriz de intervalo superior / inferior
+        yearRange : 10 ,
+
+        // mostra os números da semana no início da linha
+        showWeekNumber : false ,
+
+        // Modo seletor de semana
+        pickWholeWeek : false ,
+
+        // usado internamente (não configura fora)
+        minYear : 0 ,
+        maxYear : 9999 ,
+        minMonth : undefined ,
+        maxMonth : undefined ,
+
+        startRange : null ,
+        endRange : null ,
+
+        isRTL : falso ,
+
+        // Texto adicional para anexar ao ano no título do calendário
+        yearSuffix : '' ,
+
+        // Renderiza o mês após ano no título do calendário
+        showMonthAfterYear : false ,
+
+        // Renderiza os dias da grade do calendário que caem no mês seguinte ou anterior
+        showDaysInNextAndPreviousMonths : false ,
+
+        // Permite que o usuário selecione os dias que caem no mês seguinte ou anterior
+        enableSelectionDaysInNextAndPreviousMonths : false ,
+
+        // quantos meses são visíveis
+        numberOfMonths : 1 ,
+
+        // quando numberOfMonths for usado, isso ajudará você a escolher onde o calendário principal ficará (o padrão `esquerda`, pode ser definido como` direita`)
+        // usado apenas para a primeira exibição ou quando uma data selecionada não estiver visível
+        mainCalendar : 'esquerda' ,
+
+        // Especifique um elemento DOM para renderizar o calendário em
+        container : undefined ,
+
+        // Campo de borrão quando a data é selecionada
+        blurFieldOnSelect : true ,
+
+        // internacionalização
+        i18n : {
+            anteriorMês : 'Mês Anterior' ,
+            nextMonth      : 'Next Month' ,
+            meses         : [ 'janeiro' , 'fevereiro' , 'março' , 'abril' , 'maio' , 'junho' , 'julho' , 'agosto' , 'setembro' , 'outubro' , 'novembro' , 'dezembro' ] ,
+            dias de semana       : [ 'Domingo' , 'Segunda' , 'Terça' , 'Quarta' , 'Quinta' , 'Sexta' , 'Sábado' ] ,
+            dias da semana Curto : [ 'Dom' , 'Seg' , 'Ter' , 'Quarta' , 'Qui' , 'Sex' , 'Sáb' ]
+        } ,
+
+        // Theme Classname
+        tema : nulo ,
+
+        // array de eventos
+        eventos : [ ] ,
+
+        // função de retorno de chamada
+        onSelect : null ,
+        onOpen : null ,
+        onClose : null ,
+        onDraw : null ,
+
+        // Habilitar entrada de teclado
+        keyboardInput : true
+    } ,
+
+
+    / **
+     * funções de modelagem para abstrair a renderização de HTML
+     * /
+    renderDayName  =  function ( opts ,  day ,  abbr )
+    {
+        dia  + =  opta . firstDay ;
+        enquanto  ( dia  > =  7 )  {
+            dia  - =  7 ;
+        }
+        return  abbr ? opta . i18n . dias da semana Curto [ dia ] : opções . i18n . dias da semana [ dia ] ;
+    } ,
+
+    renderDay  =  function ( opts )
+    {
+        var  arr  =  [ ] ;
+        var  ariaSelected  =  'false' ;
+        if  ( opta . isEmpty )  {
+            if  ( opta . showDaysInNextAndPreviousMonths )  {
+                arr . push ( 'está fora do mês atual' ) ;
+
+                if ( ! opts . enableSelectionDaysInNextAndPreviousMonths )  {
+                    arr . push ( 'seleção desabilitada' ) ;
+                }
+
+            }  else  {
+                return  '<td class = "is-empty"> </td>' ;
+            }
+        }
+        if  ( opta . isDisabled )  {
+            arr . push ( 'desativado' ) ;
+        }
+        if  ( opta . isToday )  {
+            arr . push ( 'é-hoje' ) ;
+        }
+        if  ( opta . isSelected )  {
+            arr . push ( 'está selecionado' ) ;
+            ariaSelected  =  'true' ;
+        }
+        if  ( opta . hasEvent )  {
+            arr . push ( 'tem-evento' ) ;
+        }
+        if  ( opta . isInRange )  {
+            arr . push ( 'is-inrange' ) ;
+        }
+        if  ( opta . isStartRange )  {
+            arr . push ( 'is-startrange' ) ;
+        }
+        if  ( opta . isEndRange )  {
+            arr . push ( 'is-endrange' ) ;
+        }
+        return  '<td data-day = "'  +  opts . day  +  '" class = "'  +  arr . join ( '' )  +  '" aria-selected = "'  +  ariaSelected  +  '">'  +
+                 '<button class = "botão pika dia pika" type = "botão"'  +
+                    'data-pika-ano = "'  +  opta . ano  +  '" data-pika-mês = "'  +  opta . mês  +  '" data-pika-dia = "'  +  opta . dia  +  '">'  +
+                        opta . dia  +
+                 '</button>'  +
+               '</td>' ;
+    } ,
+
+    isoWeek  =  function ( date ,  firstWeekOfYearMinDays )  {
+        // Certifique-se de que estamos no início do dia.
+        data . setHours ( 0 ,  0 ,  0 ,  0 ) ;
+
+        // Quinta-feira na semana atual decide o ano porque 4 de janeiro
+        // está sempre na primeira semana de acordo com a ISO8601.
+        var  yearDay         =  data . getDate ( ) ,
+            weekDay         =  data . getDay ( ) ,
+            dayInFirstWeek  =  firstWeekOfYearMinDays ,
+            dayShift        =  dayInFirstWeek  -  1 ,  // a contagem começa em 0
+            daysPerWeek     =  7 ,
+            prevWeekDay     =  function ( day )  {  return  ( day  +  daysPerWeek  -  1 )  %  daysPerWeek ;  } ;
+
+        // Ajuste para quinta-feira na semana 1 e conte o número de semanas da data até a semana 1.
+        data . setDate ( yearDay  +  dayShift  -  prevWeekDay ( weekDay ) ) ;
+
+        var  jan4th       =  new  Date ( date . getFullYear ( ) ,  0 ,  dayInFirstWeek ) ,
+            msPerDay     =  24  *  60  *  60  *  1000 ,
+            daysBetween  =  ( date . getTime ( )  -  jan4th . getTime ( ) )  /  msPerDay ,
+            semanaNum      =  1  +  matemática . round ( ( daysBetween  -  dayShift  +  prevWeekDay ( jan4th . getDay ( ) ) )  /  daysPerWeek ) ;
+
+        return  weekNum ;
+    } ,
+
+    renderWeek  =  function  ( d ,  m ,  y ,  firstWeekOfYearMinDays )  {
+        var  data  =  nova  data ( y ,  m ,  d ) ,
+            semana  =  hasMoment ? momento ( data ) . isoWeek ( ) : isoWeek ( date ,  firstWeekOfYearMinDays ) ;
+
+        return  '<td class = "pika-week">'  +  semana  +  '</td>' ;
+    } ,
+
+    renderRow  =  function ( dias ,  isRTL ,  pickWholeWeek ,  isRowSelected )
+    {
+        return  '<tr class = "pika-row'  +  ( pickWholeWeek ? 'pick-whole-week' : '' )  +  ( isRowSelected ? 'is-selected' : '' )  +  '">'  +  ( isRTL ? dias . reverso ( ) : dias ) . join ( '' )  +  '</tr>' ;
+    } ,
+
+    renderBody  =  function ( linhas )
+    {
+        retorna  '<tbody>'  +  linhas . join ( '' )  +  '</tbody>' ;
+    } ,
+
+    renderHead  =  function ( opts )
+    {
+        var  i ,  arr  =  [ ] ;
+        if  ( opta . showWeekNumber )  {
+            arr . push ( '<th> </th>' ) ;
+        }
+        para  ( i  =  0 ;  i  <  7 ;  i ++ )  {
+            arr . push ( '<th scope = "col"> <abbr title = "'  +  renderDayName ( opts ,  i )  +  '">'  +  renderDayName ( opts ,  i ,  true )  +  '</abbr> </th>' ) ;
+        }
+        return  '<thead> <tr>'  +  ( opta . isRTL ? arr . reverse ( ) : arr ) . join ( '' )  +  '</tr> </thead>' ;
+    } ,
+
+    renderTitle  =  function ( instância ,  c ,  ano ,  mês ,  refYear ,  randId )
+    {
+        var  i ,  j ,  arr ,
+            opts  =  instância . _o ,
+            isMinYear  =  year  ===  opta . minYear ,
+            isMaxYear  =  year  ===  opta . maxYear ,
+            html  =  '<div id = "'  +  randId  +  '" class = "pika-title" role = "header" aria-live = "assertive">' ,
+            monthHtml ,
+            yearHtml ,
+            prev  =  true ,
+            próximo  =  verdadeiro ;
+
+        para  ( arr  =  [ ] ,  i  =  0 ;  i  <  12 ;  i ++ )  {
+            arr . push ( '<valor da opção = "'  +  ( ano  ===  refYear ? i  -  c : 12  +  i  -  c )  +  '"'  +
+                ( i  ===  mês ? 'selecionado = "selecionado"' : '' )  +
+                ( ( isMinYear  &&  i  <  opts . minMonth )  ||  ( isMaxYear  &&  i  >  opts . maxMonth ) ? 'disabled = "disabled"' : '' )  +  '>'  +
+                opta . i18n . meses [ i ]  +  '</option>' ) ;
+        }
+
+        monthHtml  =  '<div class = "pika-label">'  +  opta . i18n . meses [ mês ]  +  '<select class = "pika-select pika-select-month" tabindex = "- 1">'  +  arr . join ( '' )  +  '</select> </div>' ;
+
+        if  ( isArray ( opts . yearRange ) )  {
+            i  =  opta . yearRange [ 0 ] ;
+            j  =  opta . yearRange [ 1 ]  +  1 ;
+        }  else  {
+            i  =  ano  -  opta . yearRange ;
+            j  =  1  +  ano  +  opta . yearRange ;
+        }
+
+        para  ( arr  =  [ ] ;  i  <  j  &&  i  <=  opts . maxYear ;  i ++ )  {
+            if  ( i  > =  opta . minYear )  {
+                arr . push ( '<option value = "'  +  i  +  '"'  +  ( i  ===  ano ? 'selected = "selected"' : '' )  +  '>'  +  ( i )  +  '</option>' ) ;
+            }
+        }
+        yearHtml  =  '<div class = "pika-label">'  +  ano  +  opta . yearSuffix  +  '<select class = "pika-select pika-select-year" tabindex = "- 1">'  +  arr . join ( '' )  +  '</select> </div>' ;
+
+        if  ( opta . showMonthAfterYear )  {
+            html  + =  yearHtml  +  monthHtml ;
+        }  else  {
+            html  + =  monthHtml  +  yearHtml ;
+        }
+
+        if  ( isMinYear  &&  ( month  ===  0  ||  opts . minMonth  > =  month ) )  {
+            prev  =  falso ;
+        }
+
+        if  ( isMaxYear  &&  ( month  ===  11  ||  opts . maxMonth  <=  month ) )  {
+            próximo  =  falso ;
+        }
+
+        if  ( c  ===  0 )  {
+            html  + =  '<button class = "pika-prev'  +  ( prev ? '' : 'is-disabled' )  +  '" type = "button">'  +  opta . i18n . anteriorMês  +  '</button>' ;
+        }
+        if  ( c  ===  ( instância . _o . numberOfMonths  -  1 )  )  {
+            html  + =  '<button class = "pika-next'  +  ( next ? '' : 'is-disabled' )  +  '" type = "button">'  +  opta . i18n . nextMonth  +  '</button>' ;
+        }
+
+        return  html  + =  '</div>' ;
+    } ,
+
+    renderTable  =  function ( opts ,  data ,  randId )
+    {
+        return  '<table cellpadding = "0" cellspacing = "0" class = "pika-table" role = "grid" aria-labelledby = "'  +  randId  +  '">'  +  renderHead ( opts )  +  renderBody ( data )  +  '</table>' ;
+    } ,
+
+
+    / **
+     * Construtor Pikaday
+     * /
+    Pikaday  =  função ( opções )
+    {
+        var  self  =  this ,
+            opta  =  self . config ( opções ) ;
+
+        eu . _onMouseDown  =  função ( e )
+        {
+            if  ( ! self . _v )  {
+                retorno ;
+            }
+            e  =  e  ||  janela . evento ;
+            var  target  =  e . alvo  ||  e . srcElement ;
+            if  ( ! target )  {
+                retorno ;
+            }
+
+            if  ( ! hasClass ( target ,  'is-disabled' ) )  {
+                if  ( hasClass ( target ,  'botão-pika' )  &&  ! hasClass ( target ,  'is-empty' )  &&  ! hasClass ( target . parentNode ,  'is-disabled' ) )  {
+                    eu . setDate ( new  Date ( target . getAttribute ( 'data-pika-year' ) ,  target . getAttribute ( 'data-pika-month' ) ,  target . getAttribute ( 'data-pika-day' ) ) ) ;
+                    if  ( opta . vinculado )  {
+                        sto ( function ( )  {
+                            eu . hide ( ) ;
+                            if  ( opta . blurFieldOnSelect  &&  opta . campo )  {
+                                opta . campo . desfocar ( ) ;
+                            }
+                        } ,  100 ) ;
+                    }
+                }
+                else  if  ( hasClass ( target ,  'pika-prev' ) )  {
+                    eu . prevMonth ( ) ;
+                }
+                else  if  ( hasClass ( target ,  'pika-next' ) )  {
+                    eu . nextMonth ( ) ;
+                }
+            }
+            if  ( ! hasClass ( target ,  'pika-select' ) )  {
+                // se este for um evento de toque, evita a emulação de eventos do mouse
+                se  ( e . preventDefault )  {
+                    e . preventDefault ( ) ;
+                }  else  {
+                    e . returnValue  =  false ;
+                    return  false ;
+                }
+            }  else  {
+                eu . _c  =  verdadeiro ;
+            }
+        } ;
+
+        eu . _onChange  =  função ( e )
+        {
+            e  =  e  ||  janela . evento ;
+            var  target  =  e . alvo  ||  e . srcElement ;
+            if  ( ! target )  {
+                retorno ;
+            }
+            if  ( hasClass ( target ,  'pika-select-month' ) )  {
+                eu . gotoMonth ( target . value ) ;
+            }
+            else  if  ( hasClass ( target ,  'pika-select-year' ) )  {
+                eu . gotoYear ( alvo . valor ) ;
+            }
+        } ;
+
+        eu . _onKeyChange  =  função ( e )
+        {
+            e  =  e  ||  janela . evento ;
+
+            if  ( self . isVisible ( ) )  {
+
+                interruptor ( e . keyCode ) {
+                    caso  13 :
+                    caso  27 :
+                        if  ( opta . campo )  {
+                            opta . campo . desfocar ( ) ;
+                        }
+                        pausa ;
+                    caso  37 :
+                        eu . ajustarData ( 'subtrair' ,  1 ) ;
+                        pausa ;
+                    caso  38 :
+                        eu . ajustarData ( 'subtrair' ,  7 ) ;
+                        pausa ;
+                    caso  39 :
+                        eu . ajustarData ( 'adicionar' ,  1 ) ;
+                        pausa ;
+                    caso  40 :
+                        eu . ajustarData ( 'adicionar' ,  7 ) ;
+                        pausa ;
+                    caso  8 :
+                    caso  46 :
+                        eu . setDate ( nulo ) ;
+                        pausa ;
+                }
+            }
+        } ;
+
+        eu . _parseFieldValue  =  function ( )
+        {
+            if  ( opta . parse )  {
+                voltar  opta . parse ( opts . field . value ,  opts . format ) ;
+            }  else  if  ( hasMoment )  {
+                var  data  =  momento ( opta . campo . valor ,  opta . formato ,  opta . formatStrict ) ;
+                return  ( date  &&  date . isValid ( ) ) ? data . toDate ( ) : null ;
+            }  else  {
+                retornar  nova  data ( data . parse ( opts . campo . valor ) ) ;
+            }
+        } ;
+
+        eu . _onInputChange  =  função ( e )
+        {
+            var  date ;
+
+            se  ( e . firedBy  ===  auto )  {
+                retorno ;
+            }
+            data  =  self . _parseFieldValue ( ) ;
+            if  ( isDate ( date ) )  {
+              eu . setDate ( data ) ;
+            }
+            if  ( ! self . _v )  {
+                eu . show ( ) ;
+            }
+        } ;
+
+        eu . _onInputFocus  =  function ( )
+        {
+            eu . show ( ) ;
+        } ;
+
+        eu . _onInputClick  =  function ( )
+        {
+            eu . show ( ) ;
+        } ;
+
+        eu . _onInputBlur  =  function ( )
+        {
+            // IE permite que pika div ganhe foco; pegar borrar o campo de entrada
+            var  pEl  =  documento . activeElement ;
+            faça  {
+                if  ( hasClass ( pEl ,  'pika-single' ) )  {
+                    retorno ;
+                }
+            }
+            while  ( ( pEl  =  pEl . parentNode ) ) ;
+
+            if  ( ! self . _c )  {
+                eu . _b  =  sto ( função ( )  {
+                    eu . hide ( ) ;
+                } ,  50 ) ;
+            }
+            eu . _c  =  falso ;
+        } ;
+
+        eu . _onClick  =  função ( e )
+        {
+            e  =  e  ||  janela . evento ;
+            var  target  =  e . alvo  ||  e . srcElement ,
+                pEl  =  alvo ;
+            if  ( ! target )  {
+                retorno ;
+            }
+            if  ( ! hasEventListeners  &&  hasClass ( target ,  'pika-select' ) )  {
+                if  ( ! target . onchange )  {
+                    alvo . setAttribute ( 'onchange' ,  'return;' ) ;
+                    addEvent ( destino ,  'alterar' ,  self . _onChange ) ;
+                }
+            }
+            faça  {
+                if  ( hasClass ( pEl ,  'pika-single' )  ||  pEl  ===  opts . trigger )  {
+                    retorno ;
+                }
+            }
+            while  ( ( pEl  =  pEl . parentNode ) ) ;
+            if  ( self . _v  &&  target  ! ==  opts . trigger  &&  pEl  ! ==  opts . trigger )  {
+                eu . hide ( ) ;
+            }
+        } ;
+
+        eu . el  =  documento . createElement ( 'div' ) ;
+        eu . el . className  =  'pika-single'  +  ( opta . isRTL ? 'is-rtl' : '' )  +  ( opta . tema ? ''  +  opta . tema : '' ) ;
+
+        addEvent ( self . el ,  'mousedown' ,  self . _onMouseDown ,  true ) ;
+        addEvent ( self . el ,  'touchend' ,  self . _onMouseDown ,  true ) ;
+        addEvent ( self . el ,  'alterar' ,  self . _onChange ) ;
+
+        if  ( opta . keyboardInput )  {
+            addEvent ( document ,  'keydown' ,  self . _onKeyChange ) ;
+        }
+
+        if  ( opta . campo )  {
+            se  ( opta . recipiente )  {
+                opta . recipiente . appendChild ( self . el ) ;
+            }  else  if  ( opts . bound )  {
+                documento . corpo . appendChild ( self . el ) ;
+            }  else  {
+                opta . campo . parentNode . insertBefore ( self . el ,  opts . field . nextSibling ) ;
+            }
+            addEvent ( opta . campo ,  'alterar' ,  self . _onInputChange ) ;
+
+            if  ( ! opts . defaultDate )  {
+                opta . defaultDate  =  self . _parseFieldValue ( ) ;
+                opta . setDefaultDate  =  true ;
+            }
+        }
+
+        var  defDate  =  opts . defaultDate ;
+
+        if  ( isDate ( defDate ) )  {
+            if  ( opts . setDefaultDate )  {
+                eu . setDate ( defDate ,  true ) ;
+            }  else  {
+                eu . gotoDate ( defDate ) ;
+            }
+        }  else  {
+            eu . gotoDate ( new  Date ( ) ) ;
+        }
+
+        if  ( opta . vinculado )  {
+            isso . hide ( ) ;
+            eu . el . className  + =  'está vinculado' ;
+            addEvent ( opts . trigger ,  'click' ,  self . _onInputClick ) ;
+            addEvent ( opts . trigger ,  'focus' ,  self . _onInputFocus ) ;
+            addEvent ( opta . trigger ,  'blur' ,  self . _onInputBlur ) ;
+        }  else  {
+            isso . show ( ) ;
+        }
+    } ;
+
+
+    / **
+     * API Pikaday pública
+     * /
+    Pikaday . protótipo  =  {
+
+
+        / **
+         * configurar a funcionalidade
+         * /
+        config : função ( opções )
+        {
+            if  ( ! this . _o )  {
+                isso . _o  =  extender ( { } ,  padrões ,  verdadeiro ) ;
+            }
+
+            var  opts  =  extend ( this . _o ,  options ,  true ) ;
+
+            opta . isRTL  =  ! ! opta . isRTL ;
+
+            opta . campo  =  ( opta . campo  &&  opta . campo . nodeName ) ? opta . campo : nulo ;
+
+            opta . theme  =  ( typeof  opts . theme )  ===  'string'  &&  opts . tema ? opta . tema : null ;
+
+            opta . ligado  =  ! ! ( opta . limite  ! ==  indefinido ? opta . campo  &&  opta . limite : opta . campo ) ;
+
+            opta . trigger  =  ( opts . trigger  &&  opts . trigger . nodeName ) ? opta . gatilho : opta . campo ;
+
+            opta . disableWeekends  =  ! ! opta . disableWeekends ;
+
+            opta . disableDayFn  =  ( typeof  opta . disableDayFn )  ===  'função' ? opta . disableDayFn : null ;
+
+            var  nom  =  parseInt ( opts . numberOfMonths ,  10 )  ||  1 ;
+            opta . numberOfMonths  =  nom  >  4 ? 4 : nom ;
+
+            if  ( ! isDate ( opts . minDate ) )  {
+                opta . minDate  =  false ;
+            }
+            if  ( ! isDate ( opts . maxDate ) )  {
+                opta . maxDate  =  false ;
+            }
+            if  ( ( opts . minDate  &&  opts . maxDate )  &&  opts . maxDate  <  opts . minDate )  {
+                opta . maxDate  =  opta . minDate  =  false ;
+            }
+            if  ( opta . minDate )  {
+                isso . setMinDate ( opts . minDate ) ;
+            }
+            if  ( opts . maxDate )  {
+                isso . setMaxDate ( opts . maxDate ) ;
+            }
+
+            if  ( isArray ( opts . yearRange ) )  {
+                var  fallback  =  new  Date ( ) . getFullYear ( )  -  10 ;
+                opta . yearRange [ 0 ]  =  parseInt ( opts . yearRange [ 0 ] ,  10 )  ||  fallback ;
+                opta . yearRange [ 1 ]  =  parseInt ( opts . yearRange [ 1 ] ,  10 )  ||  fallback ;
+            }  else  {
+                opta . yearRange  =  matemática . abs ( parseInt ( opts . yearRange ,  10 ) )  ||  padrões . yearRange ;
+                if  ( opta . yearRange  >  100 )  {
+                    opta . yearRange  =  100 ;
+                }
+            }
+
+            return  opts ;
+        } ,
+
+        / **
+         * retornar uma string formatada da seleção atual (usando Moment.js se disponível)
+         * /
+        toString : função ( formato )
+        {
+            format  =  format  ||  isso . _o . formato ;
+            if  ( ! isDate ( this . _d ) )  {
+                return  '' ;
+            }
+            if  ( this . _o . toString )  {
+              devolva  isso . _o . toString ( this . _d ,  formato ) ;
+            }
+            if  ( hasMoment )  {
+               momento de retorno ( este . _d ) . formato ( formato ) ;
+            }
+            devolva  isso . _d . toDateString ( ) ;
+        } ,
+
+        / **
+         * retornar um objeto Moment.js da seleção atual (se disponível)
+         * /
+        getMoment : function ( )
+        {
+            return  hasMoment ? momento ( este . _d ) : nulo ;
+        } ,
+
+        / **
+         * definir a seleção atual de um objeto Moment.js (se disponível)
+         * /
+        setMoment : function ( date ,  preventOnSelect )
+        {
+            if  ( hasMoment  &&  moment . isMoment ( date ) )  {
+                isso . setDate ( data . toDate ( ) ,  preventOnSelect ) ;
+            }
+        } ,
+
+        / **
+         * retorna um objeto Date da seleção atual
+         * /
+        getDate : function ( )
+        {
+            return  isDate ( this . _d ) ? new  Date ( this . _d . getTime ( ) ) : null ;
+        } ,
+
+        / **
+         * definir a seleção atual
+         * /
+        setDate : function ( date ,  preventOnSelect )
+        {
+            if  ( ! data )  {
+                isso . _d  =  nulo ;
+
+                Se  ( esse . _o . campo )  {
+                    isso . _o . campo . valor  =  '' ;
+                    fireEvent ( this . _o . field ,  'change' ,  {  firedBy : this  } ) ;
+                }
+
+                devolva  isso . desenhar ( ) ;
+            }
+            if  ( typeof  date  ===  'string' )  {
+                data  =  nova  data ( data . parse ( data ) ) ;
+            }
+            if  ( ! isDate ( date ) )  {
+                retorno ;
+            }
+
+            var  min  =  isso . _o . minDate ,
+                max  =  isso . _o . maxDate ;
+
+            if  ( isDate ( min )  &&  date  <  min )  {
+                data  =  min ;
+            }  else  if  ( isDate ( max )  &&  date  >  max )  {
+                data  =  max ;
+            }
+
+            isso . _d  =  nova  data ( data . getTime ( ) ) ;
+            setToStartOfDay ( this . _d ) ;
+            isso . gotoDate ( this . _d ) ;
+
+            Se  ( esse . _o . campo )  {
+                isso . _o . campo . valor  =  isso . toString ( ) ;
+                fireEvent ( this . _o . field ,  'change' ,  {  firedBy : this  } ) ;
+            }
+            if  ( ! preventOnSelect  &&  typeof  this . _o . onSelect  ===  'function' )  {
+                isso . _o . onSelect . call ( this ,  this . getDate ( ) ) ;
+            }
+        } ,
+
+        / **
+         * limpar e redefinir a data
+         * /
+        limpar : função ( )
+        {
+            isso . setDate ( nulo ) ;
+        } ,
+
+        / **
+         * mudar a visualização para uma data específica
+         * /
+        gotoDate : função ( data )
+        {
+            var  newCalendar  =  true ;
+
+            if  ( ! isDate ( date ) )  {
+                retorno ;
+            }
+
+            if  ( this . calendars )  {
+                var  firstVisibleDate  =  new  Date ( this . calendars [ 0 ] . year ,  this . calendars [ 0 ] . month ,  1 ) ,
+                    lastVisibleDate  =  new  Date ( this . calendars [ this . calendars . length - 1 ] . year ,  this . calendars [ this . calendars . length - 1 ] . month ,  1 ) ,
+                    visibleDate  =  data . getTime ( ) ;
+                // obter o final do mês
+                lastVisibleDate . setMonth ( lastVisibleDate . getMonth ( ) + 1 ) ;
+                lastVisibleDate . setDate ( lastVisibleDate . getDate ( ) - 1 ) ;
+                newCalendar  =  ( visibleDate  <  firstVisibleDate . getTime ( )  ||  lastVisibleDate . getTime ( )  <  visibleDate ) ;
+            }
+
+            if  ( newCalendar )  {
+                isso . calendários  =  [ {
+                    mês : data . getMonth ( ) ,
+                    ano : data . getFullYear ( )
+                } ] ;
+                if  ( this . _o . mainCalendar  ===  'right' )  {
+                    isso . calendários [ 0 ] . mês  + =  1  -  isso . _o . numberOfMonths ;
+                }
+            }
+
+            isso . ajustarCalendars ( ) ;
+        } ,
+
+        AdjustDate : function ( sign ,  days )  {
+
+            var  day  =  this . getDate ( )  ||  nova  data ( ) ;
+             diferença  var =  parseInt ( dias ) * 24 * 60 * 60 * 1000 ;
+
+            var  newDay ;
+
+            if  ( sinal  ===  'adicionar' )  {
+                newDay  =  new  Date ( day . valueOf ( )  +  diferença ) ;
+            }  else  if  ( sinal  ===  'subtrair' )  {
+                newDay  =  new  Date ( day . valueOf ( )  -  diferença ) ;
+            }
+
+            isso . setDate ( newDay ) ;
+        } ,
+
+        AdjustCalendars : function ( )  {
+            isso . calendários [ 0 ]  =  ajustarCalendar ( este . calendários [ 0 ] ) ;
+            para  ( var  c  =  1 ;  c  <  this . _o . numberOfMonths ;  c ++ )  {
+                isso . calendários [ c ]  =  ajustarCalendar ( {
+                    mês : isso . calendários [ 0 ] . mês  +  c ,
+                    ano : isso . calendários [ 0 ] . ano
+                } ) ;
+            }
+            isso . desenhar ( ) ;
+        } ,
+
+        gotoToday : function ( )
+        {
+            isso . gotoDate ( new  Date ( ) ) ;
+        } ,
+
+        / **
+         * mudar a visualização para um mês específico (índice zero, por exemplo, 0: janeiro)
+         * /
+        gotoMonth : função ( mês )
+        {
+            if  ( ! isNaN ( mês ) )  {
+                isso . calendários [ 0 ] . mês  =  parseInt ( mês ,  10 ) ;
+                isso . ajustarCalendars ( ) ;
+            }
+        } ,
+
+        nextMonth : function ( )
+        {
+            isso . calendários [ 0 ] . mês ++ ;
+            isso . ajustarCalendars ( ) ;
+        } ,
+
+        prevMonth : function ( )
+        {
+            isso . calendários [ 0 ] . mês - ;
+            isso . ajustarCalendars ( ) ;
+        } ,
+
+        / **
+         * alterar a visualização para um ano completo específico (por exemplo, "2012")
+         * /
+        gotoYear : função ( ano )
+        {
+            if  ( ! isNaN ( ano ) )  {
+                isso . calendários [ 0 ] . ano  =  parseInt ( ano ,  10 ) ;
+                isso . ajustarCalendars ( ) ;
+            }
+        } ,
+
+        / **
+         * alterar o minDate
+         * /
+        setMinDate : função ( valor )
+        {
+            if ( valor  instanceof  Date )  {
+                setToStartOfDay ( valor ) ;
+                isso . _o . minDate  =  valor ;
+                isso . _o . minYear   =  valor . getFullYear ( ) ;
+                isso . _o . minMonth  =  valor . getMonth ( ) ;
+            }  else  {
+                isso . _o . minDate  =  padrões . minDate ;
+                isso . _o . minYear   =  padrões . minYear ;
+                isso . _o . minMonth  =  padrões . minMonth ;
+                isso . _o . startRange  =  padrões . startRange ;
+            }
+
+            isso . desenhar ( ) ;
+        } ,
+
+        / **
+         * alterar o maxDate
+         * /
+        setMaxDate : função ( valor )
+        {
+            if ( valor  instanceof  Date )  {
+                setToStartOfDay ( valor ) ;
+                isso . _o . maxDate  =  valor ;
+                isso . _o . maxYear  =  valor . getFullYear ( ) ;
+                isso . _o . maxMonth  =  valor . getMonth ( ) ;
+            }  else  {
+                isso . _o . maxDate  =  padrões . maxDate ;
+                isso . _o . maxYear  =  padrões . maxYear ;
+                isso . _o . maxMonth  =  padrões . maxMonth ;
+                isso . _o . endRange  =  padrões . endRange ;
+            }
+
+            isso . desenhar ( ) ;
+        } ,
+
+        setStartRange : função ( valor )
+        {
+            isso . _o . startRange  =  valor ;
+        } ,
+
+        setEndRange : função ( valor )
+        {
+            isso . _o . endRange  =  valor ;
+        } ,
+
+        / **
+         * atualize o HTML
+         * /
+        desenhar : função ( força )
+        {
+            if  ( ! this . _v  &&  ! force )  {
+                retorno ;
+            }
+            var  opts  =  this . _o ,
+                minYear  =  opta . minYear ,
+                maxYear  =  opta . maxYear ,
+                minMonth  =  opta . minMonth ,
+                maxMonth  =  opta . maxMonth ,
+                html  =  '' ,
+                randId ;
+
+            if  ( this . _y  <=  minYear )  {
+                isso . _y  =  minYear ;
+                if  ( ! isNaN ( minMonth )  &&  this . _m  <  minMonth )  {
+                    isso . _m  =  minMonth ;
+                }
+            }
+            if  ( this . _y  > =  maxYear )  {
+                isso . _y  =  maxYear ;
+                if  ( ! isNaN ( maxMonth )  &&  this . _m  >  maxMonth )  {
+                    isso . _m  =  maxMonth ;
+                }
+            }
+
+            para  ( var  c  =  0 ;  c  <  opts . numberOfMonths ;  c ++ )  {
+                randId  =  'título-pika-'  +  Matemática . aleatório ( ) . toString ( 36 ) . substituir ( / [ ^ az ] + / g ,  '' ) . substr ( 0 ,  2 ) ;
+                html  + =  '<div class = "pika-lendar">'  +  renderTitle ( este ,  c ,  este . calendários [ c ] . ano ,  este . calendários [ c ] . mês ,  este . calendários [ 0 ] . ano ,  randId )  +  isso . render ( este . calendários [ c ] . ano , isso . calendários [ c ] . mês ,  randId )  +  '</div>' ;
+            }
+
+            isso . el . innerHTML  =  html ;
+
+            if  ( opta . vinculado )  {
+                if ( opta . campo . tipo  ! ==  'oculto' )  {
+                    sto ( function ( )  {
+                        opta . gatilho . foco ( ) ;
+                    } ,  1 ) ;
+                }
+            }
+
+            if  ( typeof  this . _o . onDraw  ===  'function' )  {
+                isso . _o . onDraw ( isso ) ;
+            }
+
+            if  ( opta . vinculado )  {
+                // permite ao usuário do leitor de tela saber como usar as teclas de seta
+                opta . campo . setAttribute ( 'ária-label' ,  opts . ariaLabel ) ;
+            }
+        } ,
+
+        ajustarPosição : função ( )
+        {
+             campo var ,  pEl ,  largura ,  altura ,  viewportWidth ,  viewportHeight ,  scrollTop ,  left ,  top ,  clientRect ,  leftAligned ,  bottomAligned ;
+
+            if  ( this . _o . container )  return ;
+
+            isso . el . estilo . posição  =  'absoluto' ;
+
+            campo  =  isso . _o . gatilho ;
+            pEl  =  campo ;
+            largura  =  isso . el . offsetWidth ;
+            altura  =  isso . el . offsetHeight ;
+            viewportWidth  =  janela . innerWidth  ||  documento . documentElement . clientWidth ;
+            viewportHeight  =  janela . innerHeight  ||  documento . documentElement . clientHeight ;
+            scrollTop  =  janela . pageYOffset  ||  documento . corpo . scrollTop  ||  documento . documentElement . scrollTop ;
+            leftAligned  =  true ;
+            bottomAligned  =  true ;
+
+            if  ( campo typeof  . getBoundingClientRect === 'function' ) {   
+                clientRect  =  campo . getBoundingClientRect ( ) ;
+                left  =  clientRect . janela + esquerda  . pageXOffset ; 
+                top  =  clientRect . inferior  +  janela . pageYOffset ;
+            }  else  {
+                esquerda  =  pEl . offsetLeft ;
+                top   =  pEl . offsetTop  +  pEl . offsetHeight ;
+                while ( ( pEl  =  pEl . offsetParent ) )  {
+                    esquerda  + =  pEl . offsetLeft ;
+                    topo   + =  pEl . offsetTop ;
+                }
+            }
+
+            // a posição padrão é inferior e esquerda
+            if  ( ( isto . _o . reposicionar  &&  left  +  width  >  viewportWidth )  ||
+                (
+                    isso . _o . posição . indexOf ( 'right' )  >  - 1  &&
+                    esquerda  -  largura  +  campo . offsetWidth  >  0
+                )
+            )  {
+                esquerda  =  esquerda  -  largura  +  campo . offsetWidth ;
+                leftAligned  =  false ;
+            }
+            if  ( ( this . _o . reposicionar  &&  top  +  height  >  viewportHeight  +  scrollTop )  ||
+                (
+                    isso . _o . posição . indexOf ( 'top' )  >  - 1  &&
+                    topo  -  altura  -  campo . offsetHeight  >  0
+                )
+            )  {
+                top  =  top  -  height  -  field . offsetHeight ;
+                bottomAligned  =  false ;
+            }
+            
+            if  ( left  <  0 )  {
+                esquerda  =  0 ;
+            }
+
+            if  ( top  <  0 )  {
+                topo  =  0 ;
+            }
+
+            isso . el . estilo . esquerda  =  esquerda  +  'px' ;
+            isso . el . estilo . topo  =  topo  +  'px' ;
+
+            addClass ( this . el ,  leftAligned ? 'alinhado à esquerda' : 'alinhado à direita' ) ;
+            addClass ( this . el ,  bottomAligned ? 'bottom-alinhado' : 'top-alinhado' ) ;
+            removeClass ( este . el ,  ! leftAligned ? 'alinhado à esquerda' : '-alinhado à direita' ) ;
+            removeClass ( este . el ,  ! bottomAligned ? 'bottom-alinhados' : 'alinhados top-' ) ;
+        } ,
+
+        / **
+         * renderizar HTML para um determinado mês
+         * /
+        render : função ( ano ,  mês ,  randId )
+        {
+            var  opts    =  this . _o ,
+                agora     =  nova  data ( ) ,
+                dias    =  getDaysInMonth ( ano ,  mês ) ,
+                antes  =  nova  data ( ano ,  mês ,  1 ) . getDay ( ) ,
+                dados    =  [ ] ,
+                linha     =  [ ] ;
+            setToStartOfDay ( agora ) ;
+            if  ( opta . firstDay  >  0 )  {
+                antes  - =  opta . firstDay ;
+                if  ( antes de  <  0 )  {
+                    antes  + =  7 ;
+                }
+            }
+            var  previousMonth  =  month  ===  0 ? 11 : mês  -  1 ,
+                nextMonth  =  month  ===  11 ? 0 : mês  +  1 ,
+                yearOfPreviousMonth  =  mês  ===  0 ? ano  -  1 : ano ,
+                yearOfNextMonth  =  mês  ===  11 ? ano  +  1 : ano ,
+                daysInPreviousMonth  =  getDaysInMonth ( yearOfPreviousMonth ,  previousMonth ) ;
+             células  var =  dias  +  antes ,
+                depois  =  células ;
+            enquanto ( após  >  7 )  {
+                depois  - =  7 ;
+            }
+            células  + =  7  -  depois ;
+            var  isWeekSelected  =  false ;
+            para  ( var  i  =  0 ,  r  =  0 ;  i  <  células ;  i ++ )
+            {
+                 dia  var =  nova  data ( ano ,  mês ,  1  +  ( i  -  antes ) ) ,
+                    isSelected  =  isDate ( this . _d ) ? compareDates ( day ,  this . _d ) : false ,
+                    isToday  =  compareDates ( dia ,  agora ) ,
+                    hasEvent  =  opts . eventos . indexOf ( day . toDateString ( ) )  ! ==  - 1 ? verdadeiro : falso ,
+                    isEmpty  =  i  <  antes  ||  i  > =  ( dias  +  antes ) ,
+                    dayNumber  =  1  +  ( i  -  antes ) ,
+                    monthNumber  =  month ,
+                    yearNumber  =  ano ,
+                    isStartRange  =  opts . startRange  &&  compareDates ( opts . startRange ,  day ) ,
+                    isEndRange  =  opts . endRange  &&  compareDates ( opts . endRange ,  day ) ,
+                    isInRange  =  opta . startRange  &&  opts . endRange  &&  opts . startRange  <  day  &&  day  <  opts . endRange ,
+                    isDisabled  =  ( opta . minDate  &&  day  <  opta . minDate )  ||
+                                 ( opta . maxDate  &&  day  >  opta . maxDate )  ||
+                                 ( opta . disableWeekends  &&  isWeekend ( day ) )  ||
+                                 ( opta . disableDayFn  &&  opta . disableDayFn ( dia ) ) ;
+
+                if  ( isEmpty )  {
+                    if  ( i  <  antes )  {
+                        dayNumber  =  daysInPreviousMonth  +  dayNumber ;
+                        monthNumber  =  previousMonth ;
+                        yearNumber  =  yearOfPreviousMonth ;
+                    }  else  {
+                        dayNumber  =  dayNumber  -  dias ;
+                        monthNumber  =  nextMonth ;
+                        yearNumber  =  yearOfNextMonth ;
+                    }
+                }
+
+                var  dayConfig  =  {
+                        day : dayNumber ,
+                        mês : monthNumber ,
+                        ano : yearNumber ,
+                        hasEvent : hasEvent ,
+                        isSelected : isSelected ,
+                        isToday : isToday ,
+                        isDisabled : isDisabled ,
+                        isEmpty : isEmpty ,
+                        isStartRange : isStartRange ,
+                        isEndRange : isEndRange ,
+                        isInRange : isInRange ,
+                        showDaysInNextAndPreviousMonths : opta . showDaysInNextAndPreviousMonths ,
+                        enableSelectionDaysInNextAndPreviousMonths : opta . enableSelectionDaysInNextAndPreviousMonths
+                    } ;
+
+                if  ( opta . pickWholeWeek  &&  isSelected )  {
+                    isWeekSelected  =  true ;
+                }
+
+                linha . push ( renderDay ( dayConfig ) ) ;
+
+                if  ( ++ r  ===  7 )  {
+                    if  ( opta . showWeekNumber )  {
+                        linha . unshift ( renderWeek ( i  -  antes ,  mês ,  ano ,  opts . firstWeekOfYearMinDays ) ) ;
+                    }
+                    dados . push ( renderRow ( row ,  opts . isRTL ,  opts . pickWholeWeek ,  isWeekSelected ) ) ;
+                    linha  =  [ ] ;
+                    r  =  0 ;
+                    isWeekSelected  =  false ;
+                }
+            }
+            retornar  renderTable ( opts ,  data ,  randId ) ;
+        } ,
+
+        isVisible : function ( )
+        {
+            devolva  isso . _v ;
+        } ,
+
+        mostrar : função ( )
+        {
+            if  ( ! this . isVisible ( ) )  {
+                isso . _v  =  verdadeiro ;
+                isso . desenhar ( ) ;
+                removeClass ( this . el ,  'is-hidden' ) ;
+                if  ( this . _o . bound )  {
+                    addEvent ( document ,  'click' ,  this . _onClick ) ;
+                    isso . ajustarPosição ( ) ;
+                }
+                if  ( typeof  this . _o . onOpen  ===  'function' )  {
+                    isso . _o . onOpen . chamar ( isso ) ;
+                }
+            }
+        } ,
+
+        ocultar : função ( )
+        {
+            var  v  =  this . _v ;
+            if  ( v  ! ==  false )  {
+                if  ( this . _o . bound )  {
+                    removeEvent ( document ,  'click' ,  this . _onClick ) ;
+                }
+
+                if  ( ! this . _o . container )  {
+                    isso . el . estilo . posição  =  'estático' ;  // Redefinir
+                    isso . el . estilo . esquerda  =  'auto' ;
+                    isso . el . estilo . top  =  'auto' ;
+                }
+                addClass ( this . el ,  'is-hidden' ) ;
+                isso . _v  =  falso ;
+                if  ( v  ! ==  undefined  &&  typeof  this . _o . onClose  ===  'function' )  {
+                    isso . _o . onClose . chamar ( isso ) ;
+                }
+            }
+        } ,
+
+        / **
+         * FIM DE JOGO
+         * /
+        destruir : função ( )
+        {
+            var  opts  =  this . _o ;
+
+            isso . hide ( ) ;
+            removeEvent ( this . el ,  'mousedown' ,  this . _onMouseDown ,  true ) ;
+            removeEvent ( this . el ,  'touchend' ,  this . _onMouseDown ,  true ) ;
+            removeEvent ( this . el ,  'change' ,  this . _onChange ) ;
+            if  ( opta . keyboardInput )  {
+                removeEvent ( document ,  'keydown' ,  this . _onKeyChange ) ;
+            }
+            if  ( opta . campo )  {
+                removeEvent ( opta . campo ,  'alterar' ,  este . _onInputChange ) ;
+                if  ( opta . vinculado )  {
+                    removeEvent ( opts . trigger ,  'click' ,  this . _onInputClick ) ;
+                    removeEvent ( opta . trigger ,  'focus' ,  this . _onInputFocus ) ;
+                    removeEvent ( opta . trigger ,  'blur' ,  this . _onInputBlur ) ;
+                }
+            }
+            if  ( this . el . parentNode )  {
+                isso . el . parentNode . removeChild ( this . el ) ;
+            }
+        }
+
+    } ;
+
+    retornar  Pikaday ;
+} ) ) ;
