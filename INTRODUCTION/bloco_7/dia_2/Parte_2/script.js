@@ -31,7 +31,7 @@ addMorningShift(lesson2, 'turno', 'manhã');
 
 const listObjectsKeys = (lesson) => {
   let objectKeys = Object.keys(lesson);
-  for (index in objectKeys) {
+  for (let index in objectKeys) {
     const key = objectKeys[index];
     console.log(key);
   }
@@ -96,7 +96,7 @@ console.log(allLessons);
 const numberStudents = (lesson) => {
   let total = 0;
   const keys = Object.keys(lesson);
-  for (index in keys) {
+  for (let index in keys) {
     total += lesson[keys[index]].numeroEstudantes;
   }
   console.log(total);
@@ -104,10 +104,7 @@ const numberStudents = (lesson) => {
 
 numberStudents(allLessons);
 
-// 7. Crie uma função que obtenha o valor da chave de acordo com a sua posição no objeto. Por exemplo:
-
-//console.log(getValueByNumber(lesson1, 0));
-// Output: 'Matématica'
+// 7. Crie uma função que obtenha o valor da chave de acordo com a sua posição no objeto.
 
 const keyValue = (lesson, position) => {
   const key = Object.keys(lesson);
@@ -115,3 +112,23 @@ const keyValue = (lesson, position) => {
 }
 
 keyValue(lesson1, 0);
+
+// 8. Crie uma função que verifique se o par (chave / valor) existe na função. Essa função deve possuir três parâmetros, sendo eles: o objeto, o nome da chave e o valor da chave. Exemplo:
+
+const verifyPair = (lesson, key, value) => {
+  const obj = Object.entries(lesson);
+  let answer;
+  
+  for (index in obj) {
+    if (obj[index][0] === key && obj[index][1] === value) {
+      answer = true;
+    } else {
+      answer = false;
+    }
+  }
+  console.log(answer);
+}
+    
+verifyPair(lesson3, 'turno', 'noite');
+
+verifyPair(lesson3, 'materia', 'Maria Clara');
