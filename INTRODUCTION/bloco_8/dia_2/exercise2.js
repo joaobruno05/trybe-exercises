@@ -60,7 +60,7 @@ const books = [
       birthYear: 1890,
     },
     releaseYear: 1928,
-  },
+  },sort
 ];
 
 function smallerName() {
