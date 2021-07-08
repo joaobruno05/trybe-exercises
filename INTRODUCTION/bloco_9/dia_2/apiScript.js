@@ -36,4 +36,4 @@ const showJoke = () => {
 
 showJoke();
 
-// window.onload = () => fetchJoke();
+window.onload = () => fetchJoke();
