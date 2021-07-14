@@ -1,6 +1,6 @@
-// 1. A função sum(a, b) retorna a soma do parâmetro a com o b
-
 const sum = require('./script1.js');
+
+// 1. A função sum(a, b) retorna a soma do parâmetro a com o b
 
 describe('Check the return of the function sum', () => {
   // 1. Teste se o retorno de sum(4, 5) é 9
