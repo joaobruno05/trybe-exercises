@@ -1,0 +1,102 @@
+* {
+  background-color: #303030;
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  text-align: center;
+  color: white;
+  background-color: blue;
+  padding: 20px;
+}
+
+.form {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 0.8em;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 8px;
+  width: 78%;
+}
+
+.fieldset legend {
+ font-size: 1.4em;
+ font-weight: 900;
+}
+
+.email {
+  margin: 10px 0 0 10px;
+}
+
+.email input {
+  border: 1px solid white;
+  border-radius: 5px;
+  color: white;
+  padding: 8px;
+  margin: 10px;
+  margin-bottom: 0;
+}
+
+.password {
+  margin: 10px 0 0 10px;
+}
+
+.password input {
+  border: 1px solid white;
+  border-radius: 5px;
+  color: white;
+  padding: 8px;
+  margin: 10px;
+}
+
+.select {
+  margin-left: 10px;
+}
+
+.select select {
+  color: white;
+  margin: 0 0 10px 10px;
+  padding: 5px;
+}
+
+.select option {
+  color: white;
+}
+
+.checkbox {
+  margin-left: 10px;
+}
+
+.checkbox input {
+  margin-left: 10px;
+}
+
+.file {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.file input {
+  margin-left: 20px;
+}
+
+.textarea {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 0 10px;
+}
+
+.textarea textarea {
+  color: white;
+  margin-top: 10px;
+  width: 80%;
+  height: 200px;
+}
