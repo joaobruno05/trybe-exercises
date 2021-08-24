@@ -38,21 +38,43 @@
         index: 0,
       };
 
+      function criarCor() {
+        const oneChar = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+        let cor = '#';
+        const aleatorio = () => Math.floor(Math.random() * oneChar.length);
+        for (let i = 0; i < 6; i += 1) {
+            cor += oneChar[aleatorio()];
+        }
+        return cor;
+      }
+
+      let btnRandomColor = document.createElement('button');
+      let randomColor = document.getElementById('container').appendChild(btnRandomColor);
+      randomColor.innerText = 'Random Color';
+      randomColor.id = 'random-color';
+
       const NEXT_COLOR = 'NEXT_COLOR';
       const PREVIOUS_COLOR = 'PREVIOUS_COLOR';
+      const RANDOM_COLOR = 'RANDOM-COLOR';
 
-      const reducer = (state = { ESTADO_INICIAL }, action) => {
+      const reducer = (state = ESTADO_INICIAL, action) => {
         switch (action.type) {
           case NEXT_COLOR:
             return {
               ...state,
-              index: state.index === [state.colors].length - 1 ? 0 : state.index + 1,
+              index: state.index === state.colors.length - 1 ? 0 : state.index + 1,
             };
           case PREVIOUS_COLOR:
             return {
               ...state,
-              index: state.index === 0 ? state.colors.length - 1 : state.index - 1,
+              index: state.index === 0 ? state.colors.length - 1 : state.index - 1
             };
+            case RANDOM_COLOR:
+              return {
+                ...state,
+                colors: [ ...state.colors, criarCor() ],
+                index: state.colors.length,
+              }
           default:
             return state;
         }
@@ -62,6 +84,7 @@
 
       const nextButton = document.getElementById('next');
       const previousButton = document.getElementById('previous');
+      const randomColorButton = document.getElementById('random-color');
 
       nextButton.addEventListener('click', () => {
         store.dispatch({ type: NEXT_COLOR })
@@ -71,9 +94,14 @@
         store.dispatch({ type: PREVIOUS_COLOR })
       });
 
+      randomColorButton.addEventListener('click', () => {
+        store.dispatch({ type: RANDOM_COLOR }),
+        alert(`A cor ${criarCor()} foi criada`);
+      })
+
       store.subscribe(() => {
         const { colors, index } = store.getState();
-        document.getElementById('value').innerHTML = state.colors[index];
+        document.getElementById('value').innerHTML = colors[index];
         document.getElementById('container').style.backgroundColor = colors[index];
       });
     </script>
