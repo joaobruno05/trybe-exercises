@@ -1,0 +1,4 @@
+SELECT JOB_ID, AVG(SALARY) AS Média_salário FROM hr.employees
+GROUP BY JOB_ID
+HAVING JOB_ID <> 'IT_PROG'
+ORDER BY Média_salário DESC;
