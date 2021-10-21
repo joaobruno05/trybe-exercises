@@ -1,0 +1,1 @@
+SELECT FIRST_NAME, LAST_NAME, DATEDIFF(CURRENT_DATE(), HIRE_DATE) AS Dias_trabalhados FROM hr.employees;
