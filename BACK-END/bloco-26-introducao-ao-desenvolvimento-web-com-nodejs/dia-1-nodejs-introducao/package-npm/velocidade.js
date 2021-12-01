@@ -5,4 +5,6 @@ const distancia = questionInt('Qual a distância percorrida pelo seu carro(m)?\n
 const tempo = questionInt('Quanto tempo você levou(s)?\nR:');
 
 const velMedia = (distancia / tempo).toFixed(2);
-console.log(velMedia);
+console.log(`A velocidade média foi de ${velMedia} m/s`);
+
+module.exports = velMedia;
