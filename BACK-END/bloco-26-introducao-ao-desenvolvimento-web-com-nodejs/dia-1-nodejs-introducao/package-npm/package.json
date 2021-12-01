@@ -8,5 +8,8 @@
     "imc": "node imc.js"
   },
   "author": "Joao Bruno",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "readline-sync": "^1.4.10"
+  }
 }
