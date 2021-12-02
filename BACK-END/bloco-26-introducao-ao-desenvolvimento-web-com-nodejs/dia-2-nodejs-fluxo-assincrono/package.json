@@ -2,11 +2,12 @@
   "name": "dia-2-nodejs-fluxo-assincrono",
   "version": "1.0.0",
   "description": "",
-  "main": "returnPromise.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "operationNumbers": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "João Bruno",
   "license": "ISC"
 }

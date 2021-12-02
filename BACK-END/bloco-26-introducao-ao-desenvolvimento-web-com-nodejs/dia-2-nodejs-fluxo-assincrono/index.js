@@ -13,14 +13,17 @@ function operationNumbers(a, b, c) {
   return promise;
 }
 
-operationNumbers(2, 4, 6)
-  .then(result => console.log(`Sucesso: ${result}`))
-  .catch(error => console.log(`Erro: ${error.message}`));
+// operationNumbers(2, 4, 6)
+//   .then(result => console.log(`Sucesso: ${result}`))
+//   .catch(error => console.log(`Erro: ${error.message}`));
 
-operationNumbers(3, 8, 5)
-  .then(result => console.log(`Sucesso: ${result}`))
-  .catch(error => console.log(`Erro: ${error.message}`));
+// operationNumbers(3, 8, 5)
+//   .then(result => console.log(`Sucesso: ${result}`))
+//   .catch(error => console.log(`Erro: ${error.message}`));
 
-operationNumbers(2, 4, 'olá')
-  .then(result => console.log(`Sucesso: ${result}`))
-  .catch(error => console.log(`Erro: ${error.message}`));
+// operationNumbers(2, 4, 'olá')
+//   .then(result => console.log(`Sucesso: ${result}`))
+//   .catch(error => console.log(`Erro: ${error.message}`));
+
+
+module.exports = operationNumbers;
