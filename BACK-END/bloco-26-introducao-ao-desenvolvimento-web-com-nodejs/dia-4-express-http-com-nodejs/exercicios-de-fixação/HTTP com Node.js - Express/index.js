@@ -1,6 +1,8 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
+app.use(bodyParser.json());
 
 const drinks = [
   { id: 1, name: 'Refrigerante Lata', price: 5.0 },
@@ -13,6 +15,12 @@ const drinks = [
 
 app.get('/drinks', (_req, res) => {
   res.send(drinks);
+});
+
+app.post('/drinks', (req, res) => {
+  const { id, name, price } = req.body;
+  drinks.push({ id, name, price });
+  res.status(201).json({ message: 'Drink created successfully!' });
 });
 
 app.get('/drinks-alphabetical_order', (req, res) => {
