@@ -13,14 +13,13 @@ const drinks = [
   { id: 6, name: 'Agua Mineral 500 ml', price: 5.0 },
 ];
 
-app.get('/drinks', (_req, res) => {
-  res.send(drinks);
-});
-
 app.post('/drinks', (req, res) => {
   const { id, name, price } = req.body;
   drinks.push({ id, name, price });
   res.status(201).json({ message: 'Drink created successfully!' });
+});
+app.get('/drinks', (_req, res) => {
+  res.send(drinks);
 });
 
 app.get('/drinks-alphabetical_order', (req, res) => {
