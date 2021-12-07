@@ -33,4 +33,10 @@ app.get('/drink/:id', (req, res) => {
   res.status(200).json(drinks[id - 1]);
 });
 
+app.get('/drinks/search', (req, res) => {
+  const { name } = req.query;
+  const filteredDrinks = drinks.filter((drink) => drink.name.includes(name));
+  res.status(200).json(filteredDrinks);
+});
+
 app.listen(3000, () => console.log('Aplicação rodando na porta 3000'));
