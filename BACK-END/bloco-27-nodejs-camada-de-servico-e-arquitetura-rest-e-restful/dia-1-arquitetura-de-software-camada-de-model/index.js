@@ -1,5 +1,6 @@
 const express = require('express');
 const userModel = require('./models/MySQL/user.model');
+// const connectionMySQL = require('./models/MySQL/connectionMySQL');
 
 const app = express();
 const PORT = 3000;
@@ -37,6 +38,21 @@ app.post('/user', async (req, res) => {
     return res.status(201).json(result);
   } catch (error) {
     console.log(`Error:${error.message}`);
+    res.status(500).json(`Internal Error: ${error.message}`);
+  }
+});
+
+app.get('/user', async (req, res) => {
+  try {
+    const users = await userModel.getUsers();
+    if (!users) {
+      return res.status(200).json([]);
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(`Error:${error.message}`);
+    res.status(500).json(`Internal Error: ${error.message}`);
   }
 });
 
