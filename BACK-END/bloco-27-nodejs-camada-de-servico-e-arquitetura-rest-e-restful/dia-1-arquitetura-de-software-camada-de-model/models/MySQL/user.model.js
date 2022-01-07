@@ -10,6 +10,17 @@ const addUser = async (firstName, lastName, email, password) => {
   }
 };
 
+const getUsers = async () => {
+  try {
+    const [users] = await connectionMySQL.execute('SELECT * FROM users');
+
+    return users;
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+  }
+};
+
 module.exports = {
   addUser,
+  getUsers,
 };
