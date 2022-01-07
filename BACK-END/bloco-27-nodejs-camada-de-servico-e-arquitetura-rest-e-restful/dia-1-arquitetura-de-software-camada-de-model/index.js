@@ -1,4 +1,5 @@
 const express = require('express');
+// const connectionMySQL = require('./models/MySQL/connectionMySQL');
 const userModel = require('./models/MySQL/user.model');
 // const connectionMySQL = require('./models/MySQL/connectionMySQL');
 
@@ -53,6 +54,24 @@ app.get('/user', async (req, res) => {
   } catch (error) {
     console.log(`Error:${error.message}`);
     res.status(500).json(`Internal Error: ${error.message}`);
+  }
+});
+
+app.get('/user/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await userModel.getUserId(id);
+
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: 'Usuário não encontrado',
+      });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(`Error:${error.message}`);
   }
 });
 
