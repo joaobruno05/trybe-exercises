@@ -20,7 +20,25 @@ const getUsers = async () => {
   }
 };
 
+const getUserId = async (id) => {
+  try {
+    const [user] = await connectionMySQL.execute('SELECT id, first_name, last_name, email FROM users WHERE id = ?', [id]);
+
+    const result = {
+      id: user[0].id,
+      firstName: user[0].first_name,
+      lastName: user[0].last_name,
+      email: user[0].email,
+    };
+
+    return result;
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+  }
+};
+
 module.exports = {
   addUser,
   getUsers,
+  getUserId,
 };
