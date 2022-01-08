@@ -1,4 +1,5 @@
 const express = require('express');
+const connectionMySQL = require('./models/MySQL/connectionMySQL');
 // const connectionMySQL = require('./models/MySQL/connectionMySQL');
 const userModel = require('./models/MySQL/user.model');
 // const connectionMySQL = require('./models/MySQL/connectionMySQL');
@@ -72,6 +73,52 @@ app.get('/user/:id', async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.log(`Error:${error.message}`);
+    res.status(500).json(`Internal Error: ${error.message}`);
+  }
+});
+
+app.put('/user/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const {
+      firstName, lastName, email, password,
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios' });
+    }
+
+    if (typeof (password) !== 'string' || password.length < 6) {
+      return res.status(400).json({ error: true, message: 'O campo "password" deve ter pelo menos 6 caracteres' });
+    }
+
+    const emailREGEX = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+    if (!emailREGEX.test(email)) {
+      return res.status(400).json({ error: true, message: 'Digite um email válido' });
+    }
+
+    const user = await userModel.getUserId(id);
+
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: 'Usuário não encontrado',
+      });
+    }
+
+    await userModel.updateUser(firstName, lastName, email, password, id);
+
+    const result = {
+      id,
+      firstName,
+      lastName,
+      email,
+    };
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log(`Error:${error.message}`);
+    res.status(500).json(`Internal Error: ${error.message}`);
   }
 });
 

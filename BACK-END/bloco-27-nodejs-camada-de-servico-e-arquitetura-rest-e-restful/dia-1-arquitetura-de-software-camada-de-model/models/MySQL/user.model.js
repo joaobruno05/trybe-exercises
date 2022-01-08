@@ -37,8 +37,19 @@ const getUserId = async (id) => {
   }
 };
 
+const updateUser = async (firstName, lastName, email, password, id) => {
+  try {
+    const newUser = await connectionMySQL.execute('UPDATE users_crud.users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?', [firstName, lastName, email, password, id]);
+
+    return newUser;
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+  }
+};
+
 module.exports = {
   addUser,
   getUsers,
   getUserId,
+  updateUser,
 };
