@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const connectionMongo = require('./connectionMongo');
 
 const addUser = async (firstName, lastName, email, password) => {
@@ -21,7 +22,16 @@ const getUsers = async () => {
     const connect = await connectionMongo();
     const users = await connect.collection('users').find().toArray();
 
-    return users;
+    const usersMap = users.map(({
+      _id, firstName, lastName, email,
+    }) => ({
+      id: _id,
+      firstName,
+      lastName,
+      email,
+    }));
+
+    return usersMap;
   } catch (error) {
     console.log(`Error: ${error.message}`);
   }
@@ -30,17 +40,27 @@ const getUsers = async () => {
 const getUserId = async (id) => {
   try {
     const connect = await connectionMongo();
-    const user = await connect.collection('users').find({ id }).toArray();
 
-    // const result = {
-    //   id: user[0].id,
-    //   firstName: user[0].first_name,
-    //   lastName: user[0].last_name,
-    //   email: user[0].email,
-    // };
-    console.log(user);
+    if (!ObjectId.isValid(id)) return null;
 
-    // return result;
+    const user = await connect.collection('users').findOne({ _id: new ObjectId(id) });
+
+    return user;
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+  }
+};
+
+const updateUser = async (firstName, lastName, email, password) => {
+  try {
+    const connect = await connectionMongo();
+    const newUser = await connect.collection('users').updateOne({
+      $set: {
+        firstName, lastName, email, password,
+      },
+    });
+
+    return newUser;
   } catch (error) {
     console.log(`Error: ${error.message}`);
   }
@@ -50,4 +70,5 @@ module.exports = {
   addUser,
   getUsers,
   getUserId,
+  updateUser,
 };
