@@ -1,8 +1,6 @@
 const express = require('express');
-const connectionMySQL = require('./models/MySQL/connectionMySQL');
-// const connectionMySQL = require('./models/MySQL/connectionMySQL');
-const userModel = require('./models/MySQL/user.model');
-// const connectionMySQL = require('./models/MySQL/connectionMySQL');
+// const userModel = require('./models/MySQL/user.model');
+const userModel = require('./models/MongoDB/user.model');
 
 const app = express();
 const PORT = 3000;
