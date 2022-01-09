@@ -1,8 +1,6 @@
 const express = require('express');
-const connectionMySQL = require('./models/MySQL/connectionMySQL');
-// const connectionMySQL = require('./models/MySQL/connectionMySQL');
-const userModel = require('./models/MySQL/user.model');
-// const connectionMySQL = require('./models/MySQL/connectionMySQL');
+// const userModel = require('./models/MySQL/user.model');
+const userModel = require('./models/MongoDB/user.model');
 
 const app = express();
 const PORT = 3000;
@@ -62,7 +60,6 @@ app.get('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const user = await userModel.getUserId(id);
-
     if (!user) {
       return res.status(404).json({
         error: true,
