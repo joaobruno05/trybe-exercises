@@ -51,16 +51,22 @@ const getUserId = async (id) => {
   }
 };
 
-const updateUser = async (firstName, lastName, email, password) => {
+const updateUser = async (firstName, lastName, email, password, id) => {
   try {
     const connect = await connectionMongo();
-    const newUser = await connect.collection('users').updateOne({
-      $set: {
-        firstName, lastName, email, password,
+    const newUser = await connect.collection('users').updateOne(
+      {
+        _id: new ObjectId(id),
       },
-    });
+      {
+        $set: {
+          firstName, lastName, email, password,
+        },
+      },
+    );
 
     return newUser;
+    // console.log(newUser);
   } catch (error) {
     console.log(`Error: ${error.message}`);
   }
