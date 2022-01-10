@@ -76,7 +76,11 @@ app.get('/user/:id', async (req, res) => {
 
 app.put('/user/:id', async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    // MySQL
+    // const id = Number(req.params.id);
+
+    // MongoDB
+    const { id } = req.params;
     const {
       firstName, lastName, email, password,
     } = req.body;
