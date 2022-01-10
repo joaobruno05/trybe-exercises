@@ -1,5 +1,5 @@
 const express = require('express');
-const { getPing, getInfoByCEP } = require('./controllers/cepController');
+const { getPing, getInfoByCEP, addInfoAdress } = require('./controllers/cepController');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 const app = express();
@@ -10,6 +10,8 @@ app.use(express.json());
 app.get('/ping', getPing);
 
 app.get('/cep/:cep', getInfoByCEP);
+
+app.post('/cep', addInfoAdress);
 
 app.use(errorMiddleware);
 
