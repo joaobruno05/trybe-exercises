@@ -1,8 +1,6 @@
 const connectionMySQL = require('./connectionMySQL');
 
 const getInfoByCEPdataBase = async (cep) => {
-  const cepReplace = cep.replace('-', '');
-
   const [query] = await connectionMySQL.execute('SELECT * FROM ceps WHERE cep = ?', [cep]);
   console.log(query);
 
