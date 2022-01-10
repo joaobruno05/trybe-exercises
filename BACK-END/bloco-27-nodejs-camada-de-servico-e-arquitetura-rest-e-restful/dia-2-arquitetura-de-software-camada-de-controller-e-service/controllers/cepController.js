@@ -1,4 +1,4 @@
-const { getInfoByCEPService } = require('../services/cepService');
+const { getInfoByCEPService, addInfoAdressService } = require('../services/cepService');
 
 const getPing = (_req, res) => res.status(200).json({ message: 'pong!' });
 
@@ -14,7 +14,23 @@ const getInfoByCEP = async (req, res, next) => {
   }
 };
 
+const addInfoAdress = async (req, res, next) => {
+  try {
+    const {
+      cep, logradouro, bairro, localidade, uf,
+    } = req.body;
+
+    const createInfoAdress = await addInfoAdressService(cep, logradouro, bairro, localidade, uf);
+
+    return res.status(201).json(createInfoAdress);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
 module.exports = {
   getPing,
   getInfoByCEP,
+  addInfoAdress,
 };
