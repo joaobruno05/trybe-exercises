@@ -1,9 +1,20 @@
+const Joi = require('joi');
 const { getInfoByCEPdataBase, addInfoAdressDataBase, findAdressByCep } = require('../models/cepModel');
 
 const getInfoByCEPService = async (cep) => {
   const regexCEP = /\d{5}-?\d{3}/;
 
-  if (cep.length > 8 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } };
+  // if (cep.length > 8 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } };
+
+  const schema = Joi.object({
+    cep: Joi.string()
+      .min(8)
+      .regex(regexCEP),
+  });
+
+  const { error } = schema.validate({ cep });
+
+  if (error) throw { status: 400, error: { code: 'invalidData', message: error.message } };
 
   const getCEP = await getInfoByCEPdataBase(cep);
 
@@ -11,14 +22,32 @@ const getInfoByCEPService = async (cep) => {
 };
 
 const addInfoAdressService = async (cep, logradouro, bairro, localidade, uf) => {
-  if (!cep || !logradouro || !bairro || !localidade || !uf) throw { status: 400, error: { code: 'invalidData', message: 'Todos os campos são obrigatórios' } };
+  // if (!cep || !logradouro || !bairro || !localidade || !uf) throw { status: 400, error: { code: 'invalidData', message: 'Todos os campos são obrigatórios' } };
 
   const regexCEP = /\d{5}-\d{3}/;
-  if (cep.length > 9 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } }
+  // if (cep.length > 9 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } };
+
+  const schema = Joi.object({
+    cep: Joi.string()
+      .regex(regexCEP)
+      .not()
+      .empty()
+      .required(),
+    logradouro: Joi.string().not().empty().required(),
+    bairro: Joi.string().not().empty().required(),
+    localidade: Joi.string().not().empty().required(),
+    uf: Joi.string().not().empty().required(),
+  });
+
+  const { error } = schema.validate({
+    cep, logradouro, bairro, localidade, uf,
+  });
+
+  if (error) throw { status: 400, error: { code: 'invalidData', message: error.message }  }
 
   const getInfoByCEP = await findAdressByCep(cep);
 
-  if (getInfoByCEP.length !== 0) throw { status: 409, error: { code: 'alreadyExists', message: 'CEP já existente' } }
+  if (getInfoByCEP.length !== 0) throw { status: 409, error: { code: 'alreadyExists', message: 'CEP já existente' } };
 
   const resultInfo = await addInfoAdressDataBase(cep, logradouro, bairro, localidade, uf);
 
