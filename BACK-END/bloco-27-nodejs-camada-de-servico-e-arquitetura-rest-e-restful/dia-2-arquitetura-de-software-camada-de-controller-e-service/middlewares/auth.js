@@ -8,11 +8,12 @@ const auth = async (req, res, next) => {
 
     const user = authService.verifyToken(authorization);
 
-    req.user = user;
+    req.user = user.userName;
+    req.admin = user.admin;
 
     if (!user) return res.status(401).json({ message: 'Token inválido!' });
 
-    return next();
+    next();
   } catch (error) {
     console.log(`Error auth: ${error.message}`);
     return res.status(401).json({ message: 'Falha na autenticação' });

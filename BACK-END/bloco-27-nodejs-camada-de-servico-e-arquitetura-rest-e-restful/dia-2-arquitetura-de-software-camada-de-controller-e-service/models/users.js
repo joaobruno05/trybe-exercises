@@ -12,7 +12,14 @@ const createUsersModel = async (userName, password, admin) => {
   return ({ userName, password, admin });
 };
 
+const getUserModel = async () => {
+  const user = await connectionMySQL.execute('SELECT * from users');
+
+  return user;
+};
+
 module.exports = {
   findUserModel,
   createUsersModel,
+  getUserModel,
 };
