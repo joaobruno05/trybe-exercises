@@ -19,10 +19,11 @@ const addInfoAdress = async (req, res, next) => {
     const {
       cep, logradouro, bairro, localidade, uf,
     } = req.body;
+    const userName = req.user;
 
     const createInfoAdress = await addInfoAdressService(cep, logradouro, bairro, localidade, uf);
 
-    return res.status(201).json(createInfoAdress);
+    return res.status(201).json({ ...createInfoAdress, userName });
   } catch (error) {
     console.log(error);
     return next(error);
