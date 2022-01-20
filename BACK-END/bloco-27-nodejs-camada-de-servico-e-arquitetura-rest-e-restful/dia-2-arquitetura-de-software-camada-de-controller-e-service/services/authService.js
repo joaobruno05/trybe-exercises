@@ -12,9 +12,9 @@ const verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const { userName } = decoded.data;
+    const { userName, admin } = decoded.data;
 
-    return userName;
+    return { userName, admin };
   } catch (error) {
     console.log('Falha na verificação');
     return null;

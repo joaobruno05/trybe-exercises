@@ -3,7 +3,7 @@ const {
   getPing, getInfoByCEP, addInfoAdress,
 } = require('./controllers/cepController');
 const { login } = require('./controllers/login');
-const { createUsersController } = require('./controllers/users');
+const { createUsersController, getUserController } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -16,11 +16,13 @@ app.get('/ping', getPing);
 
 app.get('/cep/:cep', getInfoByCEP);
 
-app.post('/users', createUsersController);
+app.post('/cep', auth, addInfoAdress);
 
 app.post('/login', login);
 
-app.post('/cep', auth, addInfoAdress);
+app.post('/users', createUsersController);
+
+app.get('/users/me', auth, getUserController);
 
 app.use(errorMiddleware);
 
