@@ -1,10 +1,10 @@
 const Joi = require('joi');
-const { getInfoByCEPdataBase, addInfoAdressDataBase, findAdressByCep } = require('../models/cepModel');
+const {
+  getInfoByCEPdataBase, addInfoAdressDataBase, findAdressByCep,
+} = require('../models/cepModel');
 
 const getInfoByCEPService = async (cep) => {
   const regexCEP = /\d{5}-?\d{3}/;
-
-  // if (cep.length > 8 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } };
 
   const schema = Joi.object({
     cep: Joi.string()
@@ -22,10 +22,7 @@ const getInfoByCEPService = async (cep) => {
 };
 
 const addInfoAdressService = async (cep, logradouro, bairro, localidade, uf) => {
-  // if (!cep || !logradouro || !bairro || !localidade || !uf) throw { status: 400, error: { code: 'invalidData', message: 'Todos os campos são obrigatórios' } };
-
   const regexCEP = /\d{5}-\d{3}/;
-  // if (cep.length > 9 || !regexCEP.test(cep)) throw { status: 400, error: { code: 'invalidData', message: 'CEP inválido' } };
 
   const schema = Joi.object({
     cep: Joi.string()
@@ -43,7 +40,7 @@ const addInfoAdressService = async (cep, logradouro, bairro, localidade, uf) => 
     cep, logradouro, bairro, localidade, uf,
   });
 
-  if (error) throw { status: 400, error: { code: 'invalidData', message: error.message }  }
+  if (error) throw { status: 400, error: { code: 'invalidData', message: error.message } };
 
   const getInfoByCEP = await findAdressByCep(cep);
 
