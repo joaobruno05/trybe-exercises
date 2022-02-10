@@ -27,6 +27,21 @@ const findById = async (req, res) => {
   }
 };
 
+const findByAuthor = async (req, res) => {
+  try {
+    const { author } = req.query;
+
+    const book = await Book.findOne({ where: { author } });
+
+    if (!book) return res.status(error.status).json({ message: error.message });
+
+    return res.status(200).json(book);
+  } catch (err) {
+    console.log(`Error findByAuthor: ${err.message}`);
+    return res.status(error.status).json({ message: error.message });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const {
@@ -84,6 +99,7 @@ const remove = async (req, res) => {
 module.exports = {
   findAllBooks,
   findById,
+  findByAuthor,
   create,
   remove,
   update,
