@@ -18,6 +18,8 @@ const findById = async (req, res) => {
 
     const book = await Book.findByPk(id);
 
+    if (!book) return res.status(error.status).json({ message: error.message });
+
     return res.status(200).json(book);
   } catch (err) {
     console.log(`Error findById: ${err.message}`);
@@ -43,12 +45,34 @@ const create = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title, author, pageQuantity,
+    } = req.body;
+
+    const [book] = await Book.update(
+      { title, author, pageQuantity },
+      { where: { id } },
+    );
+
+    if (!book) return res.status(error.status).json({ message: error.message });
+
+    return res.status(200).json({ message: 'Livro atualizado!' });
+  } catch (err) {
+    console.log(`Error update: ${err.message}`);
+    return res.status(error.status).json({ message: error.message });
+  }
+};
+
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
 
     const book = await Book.destroy({ where: { id } });
-    console.log(book);
+
+    if (!book) return res.status(error.status).json({ message: error.message });
 
     return res.status(200).json({ message: 'Livro deletado com sucesso!!!' });
   } catch (err) {
@@ -62,4 +86,5 @@ module.exports = {
   findById,
   create,
   remove,
+  update,
 };
