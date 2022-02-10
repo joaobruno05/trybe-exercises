@@ -7,6 +7,8 @@ const bookController = require('../controllers/bookController');
 // rotas
 router.get('/:id', bookController.findById);
 
+router.get('/', bookController.findByAuthor);
+
 router.post('/', bookController.create);
 
 router.put('/:id', bookController.update);
