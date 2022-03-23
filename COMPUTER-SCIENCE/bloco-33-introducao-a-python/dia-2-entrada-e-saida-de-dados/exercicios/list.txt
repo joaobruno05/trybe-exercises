@@ -1,0 +1,6 @@
+comida
+bebida
+suco
+batata
+refrigerante
+lasanha
