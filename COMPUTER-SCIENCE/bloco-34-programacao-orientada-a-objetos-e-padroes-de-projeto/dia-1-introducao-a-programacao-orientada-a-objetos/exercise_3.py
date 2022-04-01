@@ -1,8 +1,9 @@
 import math
 
 
-class Circulo:
-    def __init__(self, raio):
+class Geometria:
+    def __init__(self, nome, raio):
+        self.nome = nome
         self.raio = raio
 
     def calcular_area(self):
@@ -10,7 +11,8 @@ class Circulo:
         return round(area, 2)
 
 
-objeto_circulo = Circulo(2)
+objeto_circulo = Geometria("Círculo", 2)
 
+print(objeto_circulo.nome)
 print(objeto_circulo.raio)
 print(objeto_circulo.calcular_area())
