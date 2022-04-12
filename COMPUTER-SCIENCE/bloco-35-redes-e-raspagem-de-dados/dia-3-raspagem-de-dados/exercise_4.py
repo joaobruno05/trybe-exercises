@@ -12,9 +12,14 @@ def extract_infos_site():
 
     title = selector.css(".product_page h1::text").get()
     price = selector.css(".product_page .price_color::text").get()[2:]
+
     description = selector.xpath(
         '//*[@id="content_inner"]/article/p/text()'
     ).get()
+    suffix = "...more"
+    if description.endswith(suffix):
+        description = description[:-len(suffix)]
+
     image = selector.css(".product_page img::attr(src)").get()
 
     print(f"{title}, {price}, {description}, {image}")
